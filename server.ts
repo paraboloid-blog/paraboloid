@@ -6,8 +6,7 @@ import * as http from 'http';
 import * as path from 'path';
 import * as passport from 'passport';
 import * as morgan from 'morgan';
-import { ExprError } from './helpers/errors';
-import { router } from './routes';
+import { api } from './routes';
 
 var app = express();
 
@@ -27,13 +26,13 @@ app.use(expressSession({
 // require('./models/Article');
 // require('./models/Comment');
 // require('./config/passport');
-app.use(router);
+app.use(api);
 
 app.use(function(
   req: express.Request,
   res: express.Response,
   next: express.NextFunction) {
-  next(new ExprError('Not Found', 404));
+  res.sendStatus(404);
 });
 
 app.use(function(
@@ -41,8 +40,7 @@ app.use(function(
   req: express.Request,
   res: express.Response,
   next: express.NextFunction) {
-  res.status(err.status || 500);
-  res.json({ 'errors': { message: err.message } });
+  res.sendStatus(err.status || 500);
 });
 
 var server = app.listen(process.env.PORT || 3000, function() {

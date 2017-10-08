@@ -68,7 +68,7 @@ gulp.task('watch', ['backend:watch'], () => {
     watch: ['foo/'],
     ext: 'noop'
   }).on('restart', () => {
-    console.log('Restarted!');
+    console.log('>>> Nodemon restarted');
   });
 });
 
