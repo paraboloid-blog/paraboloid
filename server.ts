@@ -1,16 +1,20 @@
 import * as express from 'express';
 import * as expressSession from 'express-session';
-import * as mongoose from 'mongoose';
 import * as bodyParser from 'body-parser';
 import * as http from 'http';
 import * as path from 'path';
 import * as passport from 'passport';
 import * as morgan from 'morgan';
+import * as mongoose from 'mongoose';
 import { api } from './routes';
+import { mongoURL } from './config/db';
+import { ip, port } from './config/address';
+// require('./models/User');
+// require('./models/Article');
+// require('./models/Comment');
+// require('./config/passport');
 
-var app = express();
-
-app.use(morgan('dev'));
+let app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -22,10 +26,13 @@ app.use(expressSession({
   saveUninitialized: false
 }));
 
-// require('./models/User');
-// require('./models/Article');
-// require('./models/Comment');
-// require('./config/passport');
+mongoose.connect(mongoURL);
+
+if (app.get('env') === 'development') {
+  app.use(morgan('dev'));
+  mongoose.set('debug', true);
+}
+
 app.use(api);
 
 app.use(function(
@@ -43,7 +50,7 @@ app.use(function(
   res.sendStatus(err.status || 500);
 });
 
-var server = app.listen(process.env.PORT || 3000, function() {
+let server = app.listen(port, ip, function() {
   console.log(
     'Listening on ' +
     server.address().address + ':' + server.address().port);
