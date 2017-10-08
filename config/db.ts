@@ -5,7 +5,7 @@ let mongoURL =
   process.env.OPENSHIFT_MONGODB_DB_URL ||
   process.env.MONGO_URL ||
   'mongodb://localhost/paraboloid';
-log('original mongoURL %s', mongoURL);
+log('original mongoURL %o', mongoURL);
 
 if (mongoURL === undefined && process.env.DATABASE_SERVICE_NAME) {
 
@@ -28,6 +28,6 @@ if (mongoURL === undefined && process.env.DATABASE_SERVICE_NAME) {
     mongoURL += mongoHost + ':' + mongoPort + '/' + mongoDatabase;
   }
 }
-log('new mongoURL %s', mongoURL);
+log('new mongoURL %o', mongoURL);
 
 export { mongoURL };
