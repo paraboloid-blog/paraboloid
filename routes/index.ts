@@ -1,9 +1,5 @@
-import * as express from 'express';
-let router = express.Router();
+import { api } from './api';
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
-});
+api.get('/api', api);
 
-export { router };
+export { api as router };
