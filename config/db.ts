@@ -1,7 +1,11 @@
+import * as debug from 'debug';
+let log = debug('paraboloid:server:mongo');
+
 let mongoURL =
   process.env.OPENSHIFT_MONGODB_DB_URL ||
   process.env.MONGO_URL ||
   'mongodb://localhost/paraboloid';
+log('original mongoURL %s', mongoURL);
 
 if (mongoURL === undefined && process.env.DATABASE_SERVICE_NAME) {
 
@@ -24,5 +28,6 @@ if (mongoURL === undefined && process.env.DATABASE_SERVICE_NAME) {
     mongoURL += mongoHost + ':' + mongoPort + '/' + mongoDatabase;
   }
 }
+log('new mongoURL %s', mongoURL);
 
 export { mongoURL };
