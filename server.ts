@@ -10,6 +10,7 @@ import * as debug from 'debug';
 import { api } from './routes';
 import { mongoURL } from './config/db';
 import { ip, port } from './config/address';
+import { secret } from './config/secret';
 // require('./models/User');
 // require('./models/Article');
 // require('./models/Comment');
@@ -26,7 +27,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 log('>>> expressSession');
 app.use(expressSession({
-  secret: 'paraboloid',
+  secret: secret,
   cookie: { maxAge: 60000 },
   resave: false,
   saveUninitialized: false
