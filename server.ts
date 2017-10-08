@@ -42,9 +42,11 @@ app.use(function(
   res: express.Response,
   next: express.NextFunction) {
   res.status(err.status || 500);
-  res.json({ 'errors': { message: err.message, stack: err.stack } });
+  res.json({ 'errors': { message: err.message } });
 });
 
 var server = app.listen(process.env.PORT || 3000, function() {
-  console.log('Listening on port ' + server.address().port);
+  console.log(
+    'Listening on ' +
+    server.address().address + ':' + server.address().port);
 });

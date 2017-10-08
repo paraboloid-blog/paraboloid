@@ -1,5 +1,5 @@
 import { api } from './api';
 
-api.get('/api', api);
+api.use('/api', api);
 
 export { api as router };
