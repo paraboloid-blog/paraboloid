@@ -26,7 +26,7 @@ app.use(session({
 
 log('>>> mongoose');
 (<any>mongoose).Promise = global.Promise;
-mongoose.connect(config.mongoURL);
+mongoose.connect(config.mongoURL, {useMongoClient: true});
 
 log('>>> extra logging');
 if (app.get('env') === 'development') {
