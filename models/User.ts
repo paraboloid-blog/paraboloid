@@ -1,9 +1,9 @@
+import { Document, Schema, Model, model } from 'mongoose';
 import * as uniqueValidator from 'mongoose-unique-validator';
 import * as crypto from 'crypto';
 import * as jwt from 'jsonwebtoken';
 import * as debug from 'debug';
 import * as config from '../config';
-import { Document, Schema, Model, model } from 'mongoose';
 
 let log = debug('paraboloid:Server:Models:User');
 

@@ -7,7 +7,6 @@ import { UserModel } from '../../models';
 
 let log = debug('paraboloid:Server:API:Users');
 let router = express.Router();
-let User = mongoose.model('User');
 
 router.post('/', function(
   req: express.Request,
@@ -21,7 +20,7 @@ router.post('/', function(
     user.email = req.body.email;
     user.setPassword(req.body.password);
     user.save().then(function() {
-      log("User successfully saved")
+      log("User %o successfully saved", user.username);
       return res.status(201).json({ user: user.toAuthJSON() });
     }).catch(next);
   }
