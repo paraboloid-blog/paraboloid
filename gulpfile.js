@@ -1,6 +1,7 @@
 const gulp = require('gulp');
 const yarn = require('gulp-yarn');
 const gprint = require('gulp-print');
+const env = require('gulp-env');
 const webpack = require('webpack');
 const vinylPaths = require('vinyl-paths');
 const nodemon = require('nodemon');
@@ -59,6 +60,7 @@ gulp.task('backend:watch', () => {
 gulp.task('build', ['modules', 'backend:build']);
 
 gulp.task('watch', ['backend:watch'], () => {
+  env({vars: { DEBUG: '*paraboloid*' }});
   nodemon({
     execMap: {
       js: 'node'
