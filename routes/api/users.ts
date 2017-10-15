@@ -15,6 +15,7 @@ router.param('user', (
   username: any
 ) => {
   UserModel.findOne({ username: username }).then((user: IUser) => {
+
     if (user) {
       log('Parameter "user": %o', username);
       req.user = user;
@@ -25,6 +26,7 @@ router.param('user', (
       res.status(404);
       next(new Error('User not Found'));
     }
+
   }).catch(next);
 });
 
@@ -33,15 +35,21 @@ router.post('/', (
   res: express.Response,
   next: express.NextFunction
 ) => {
+
   log('>>> post /api/users/ with %o', req.body);
+
   let user = new UserModel();
   user.username = req.body.username;
   user.email = req.body.email;
+  user.bio = req.body.bio;
+  user.image = req.body.image;
   user.setPassword(req.body.password);
+
   user.save().then(function() {
     log("user %o successfully saved", user.username);
     return res.status(201).json({ user: user.toAuthJSON() });
   }).catch(next);
+
 });
 
 router.post('/login', (
