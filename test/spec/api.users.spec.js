@@ -1,12 +1,8 @@
+var frisby = require('frisby');
 describe("tests/api.users.spec.ts", function () {
-    it("Post /api/users", function () {
-        // frisby.create('POST')
-        //   .post('https://some.url/rest/login',
-        //     { username: 'a_test_user', password: 'a_test_password' },
-        //     { json: true },
-        //     { headers: { 'Content-Type': 'application/json' }})
-        //   .expectStatus(201);
-        var undefinedValue = 1;
-        expect(undefinedValue).toBeDefined();
+    it("Post /api/users", function (doneFn) {
+        frisby.post('http://127.0.0.1:8080/api/users', { username: 'Test', email: 'test@mail.com', password: 'password' }, { headers: { json: true, 'Content-Type': 'application/json' } })
+            .expect('status', 201)
+            .done(doneFn);
     });
 });
