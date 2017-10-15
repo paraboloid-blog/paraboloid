@@ -2,6 +2,8 @@ const gulp = require('gulp');
 const yarn = require('gulp-yarn');
 const gprint = require('gulp-print');
 const env = require('gulp-env');
+const tsc = require('gulp-tsc');
+const jasmineNode = require('gulp-jasmine-node');
 const webpack = require('webpack');
 const vinylPaths = require('vinyl-paths');
 const nodemon = require('nodemon');
@@ -14,7 +16,8 @@ const paths = {
   wp: 'webpack.config.js',
   pkg: 'package.json',
   srv: 'server.js',
-  lock: 'yarn.lock'
+  lock: 'yarn.lock',
+  test: 'test/**/*spec.ts'
 };
 const package = require(path.join(__dirname, paths.pkg));
 const wp_backend_conf = require(path.join(__dirname, paths.wp));
@@ -60,7 +63,11 @@ gulp.task('backend:watch', () => {
 gulp.task('build', ['modules', 'backend:build']);
 
 gulp.task('watch', ['backend:watch'], () => {
-  env({vars: { DEBUG: '*paraboloid*' }});
+  env({
+    vars: {
+      DEBUG: '*paraboloid*'
+    }
+  });
   nodemon({
     execMap: {
       js: 'node'
@@ -72,6 +79,14 @@ gulp.task('watch', ['backend:watch'], () => {
   }).on('restart', () => {
     console.log('>>> Nodemon restarted');
   });
+});
+
+gulp.task('backend:test', () => {
+  return gulp.src([paths.test])
+    .pipe(tsc())
+    .pipe(jasmineNode({
+      timeout: 10000
+    }));
 });
 
 gulp.task('default', ['build']);
