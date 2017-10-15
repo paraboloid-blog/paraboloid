@@ -17,7 +17,7 @@ router.post('/', function(
   let user = new UserModel();
   user.username = req.body.username;
   user.email = req.body.email;
-  if (req.body.password) user.setPassword(req.body.password);
+  user.setPassword(req.body.password);
   user.save().then(function() {
     log("user %o successfully saved", user.username);
     return res.status(201).json({ user: user.toAuthJSON() });
