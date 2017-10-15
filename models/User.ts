@@ -5,7 +5,7 @@ import * as jwt from 'jsonwebtoken';
 import * as debug from 'debug';
 import * as config from '../config';
 
-let log = debug('paraboloid:Server:Models:User');
+let log = debug('paraboloid:server:models:user');
 
 interface IUser extends Document {
   username: string;
@@ -38,22 +38,35 @@ let UserSchema: Schema = new Schema({
   },
   bio: String,
   image: String,
-  hash: String,
-  salt: String,
+  hash: {
+    type: String,
+    required: [true, "can't be blank"]
+  },
+  salt: {
+    type: String,
+    required: [true, "can't be blank"],
+  }
 }, { timestamps: true });
 
 UserSchema.plugin(uniqueValidator, { message: 'is already taken.' });
 
 UserSchema.methods.validPassword = function(password: string): boolean {
-  let hash = crypto.pbkdf2Sync(password, this.salt, 10000, 512, 'sha512').toString('hex');
-  log('Hash %o is compared to user hash %o', hash, this.hash);
-  return this.hash === hash;
+  log('password %o', password);
+  if (password) {
+    let hash = crypto.pbkdf2Sync(password, this.salt, 10000, 512, 'sha512').toString('hex');
+    log('hash %o is compared to user hash %o', hash, this.hash);
+    return this.hash === hash;
+  }
+  else return false;
 };
 
 UserSchema.methods.setPassword = function(password: string): void {
-  this.salt = crypto.randomBytes(16).toString('hex');
-  this.hash = crypto.pbkdf2Sync(password, this.salt, 10000, 512, 'sha512').toString('hex');
-  log('Hash %o and salt %o generated for password %o', this.hash, this.salt, password);
+  log('password %o', password);
+  if (password) {
+    this.salt = crypto.randomBytes(16).toString('hex');
+    this.hash = crypto.pbkdf2Sync(password, this.salt, 10000, 512, 'sha512').toString('hex');
+    log('hash %o and salt %o generated', this.hash, this.salt);
+  }
 };
 
 UserSchema.methods.generateJWT = function(): string {

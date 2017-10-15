@@ -5,23 +5,23 @@ import * as config from '../../config';
 
 class Authorization {
 
-  log = debug('paraboloid:Server:Authorization');
+  log = debug('paraboloid:server:authorization');
 
   private getTokenFromHeader(req: express.Request) {
 
-    this.log("Authorization header: %o", req.headers.authorization);
+    this.log("authorization header: %o", req.headers.authorization);
     let auth: string = req.headers.authorization[0];
 
     if (auth.split(' ')[0] === 'Token' || auth.split(' ')[0] === 'Bearer') {
       let token = auth.split(' ')[1];
-      this.log("Token %o", token);
+      this.log("token %o", token);
       return token;
     }
     else return null;
   }
 
   get required(): jwt.RequestHandler {
-    this.log("Authorization required");
+    this.log("authorization required");
     return jwt({
       secret: config.secret,
       userProperty: 'payload',
@@ -30,7 +30,7 @@ class Authorization {
   }
 
   get optional(): jwt.RequestHandler {
-    this.log("Authorization optional");
+    this.log("authorization optional");
     return jwt({
       secret: config.secret,
       userProperty: 'payload',

@@ -1,5 +1,5 @@
 import * as debug from 'debug';
-let log = debug('paraboloid:server:session');
+let log = debug('paraboloid:server:secret');
 
 export const secret = process.env.SECRET || 'secret';
-log('Secret %o', secret);
+log('secret %o', secret);

@@ -4,7 +4,7 @@ import { users } from './users';
 import { articles } from './articles';
 import { tags } from './tags';
 
-let log = debug('paraboloid:Server:API');
+let log = debug('paraboloid:server:API');
 let api = express.Router();
 
 api.use('/users', users);

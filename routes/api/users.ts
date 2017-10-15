@@ -5,7 +5,7 @@ import * as debug from 'debug';
 import { auth } from './auth';
 import { UserModel } from '../../models';
 
-let log = debug('paraboloid:Server:API:Users');
+let log = debug('paraboloid:server:API:users');
 let router = express.Router();
 
 router.post('/', function(
@@ -13,21 +13,15 @@ router.post('/', function(
   res: express.Response,
   next: express.NextFunction) {
 
-  log('>>> Post /api/users/ with %o', req.body);
-  try {
-    let user = new UserModel();
-    user.username = req.body.username;
-    user.email = req.body.email;
-    user.setPassword(req.body.password);
-    user.save().then(function() {
-      log("User %o successfully saved", user.username);
-      return res.status(201).json({ user: user.toAuthJSON() });
-    }).catch(next);
-  }
-  catch (e) {
-    res.status(422);
-    next(e);
-  }
+  log('>>> post /api/users/ with %o', req.body);
+  let user = new UserModel();
+  user.username = req.body.username;
+  user.email = req.body.email;
+  if (req.body.password) user.setPassword(req.body.password);
+  user.save().then(function() {
+    log("user %o successfully saved", user.username);
+    return res.status(201).json({ user: user.toAuthJSON() });
+  }).catch(next);
 });
 
 router.post('/login', function(
