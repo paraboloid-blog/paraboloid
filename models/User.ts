@@ -7,7 +7,7 @@ import * as config from '../config';
 
 let log = debug('paraboloid:server:models:user');
 
-interface IUser extends Document {
+export interface IUser extends Document {
   username: string;
   email: string;
   bio: string;

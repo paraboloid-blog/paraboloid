@@ -60,6 +60,14 @@ gulp.task('backend:watch', () => {
   });
 });
 
+gulp.task('backend:test', () => {
+  return gulp.src([paths.test])
+    .pipe(tsc())
+    .pipe(jasmineNode({
+      timeout: 10000
+    }));
+});
+
 gulp.task('build', ['modules', 'backend:build']);
 
 gulp.task('watch', ['backend:watch'], () => {
@@ -79,14 +87,6 @@ gulp.task('watch', ['backend:watch'], () => {
   }).on('restart', () => {
     console.log('>>> Nodemon restarted');
   });
-});
-
-gulp.task('backend:test', () => {
-  return gulp.src([paths.test])
-    .pipe(tsc())
-    .pipe(jasmineNode({
-      timeout: 10000
-    }));
 });
 
 gulp.task('default', ['build']);
