@@ -1,3 +1,5 @@
+/// <reference path="../typings/Models.d.ts"/>
+
 import { Document, Schema, Model, model } from 'mongoose';
 import * as uniqueValidator from 'mongoose-unique-validator';
 import * as crypto from 'crypto';
@@ -7,17 +9,7 @@ import * as config from '../config';
 
 let log = debug('paraboloid:server:models:user');
 
-export interface IUser extends Document {
-  username: string;
-  email: string;
-  bio: string;
-  image: string;
-  hash: string;
-  salt: string;
-  validPassword: (password: string) => boolean;
-  setPassword: (password: string) => void;
-  toAuthJSON: () => object;
-}
+interface IUserModel extends IUser, Document { }
 
 let UserSchema: Schema = new Schema({
   username: {
@@ -93,4 +85,4 @@ UserSchema.methods.toAuthJSON = function(): object {
   return token;
 };
 
-export const UserModel: Model<IUser> = model<IUser>('User', UserSchema);
+export const UserModel: Model<IUserModel> = model<IUserModel>('User', UserSchema);
