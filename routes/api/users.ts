@@ -1,34 +1,15 @@
+/// <reference path="../../typings/Express.d.ts"/>
+
 import * as mongoose from 'mongoose';
 import * as express from 'express';
+import * as jwt from 'express-jwt';
 import * as passport from 'passport';
 import * as debug from 'debug';
 import { auth } from './auth';
-import { UserModel, IUser } from '../../models';
+import { IUserModel, UserModel } from '../../models';
 
 let log = debug('paraboloid:server:API:users');
 let router = express.Router();
-
-router.param('user', (
-  req: express.Request,
-  res: express.Response,
-  next: express.NextFunction,
-  username: any
-) => {
-  UserModel.findOne({ username: username }).then((user: IUser) => {
-
-    if (user) {
-      log('Parameter "user": %o', username);
-      req.user = user;
-      next();
-    }
-    else {
-      log('User not found');
-      res.status(404);
-      next(new Error('User not Found'));
-    }
-
-  }).catch(next);
-});
 
 router.post('/', (
   req: express.Request,
@@ -56,43 +37,52 @@ router.post('/login', (
   req: express.Request,
   res: express.Response
 ) => {
-  res.status(200);
-  res.json({ path: req.originalUrl });
+  res.status(200).json({ path: req.originalUrl });
 });
 
-router.put('/:user', auth.required, (
+router.put('/user', auth.required, (
   req: express.Request,
   res: express.Response
 ) => {
-  res.status(200);
-  res.json(
+  res.status(200).json(
     {
       path: req.originalUrl,
       user: req.params.user
     });
 });
 
-router.get('/:user', auth.required, (
+router.get('/user', auth.required, (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction
 ) => {
-  res.status(200);
-  res.json(
+  res.status(200).json(
     {
       path: req.originalUrl,
       user: req.params.user
     });
 });
 
-router.delete('/:user', (
-  req: express.Request,
+router.delete('/user', auth.required, (
+  req: express.Request & RequestPayload,
   res: express.Response,
   next: express.NextFunction
 ) => {
-  return req.user.remove().then(() => {
-    return res.sendStatus(204);
-  });
+
+  UserModel.findOne({ username: req.payload.id }).then((user: IUserModel) => {
+    if (user) {
+      log('User %o will be deleted', user.username);
+      user.remove().then(() => {
+        log('User %o was deleted', user.username);
+        return res.sendStatus(204);
+      });
+    }
+    else {
+      log('User not valid');
+      res.status(401).send('User not valid');
+    }
+  }).catch(next);
+
 });
 
 export { router as users };

@@ -24,7 +24,6 @@
     "@types/express": "^4.0.37",
     "@types/express-jwt": "^0.0.37",
     "@types/express-session": "^1.15.3",
-    "@types/frisby": "^0.8.1",
     "@types/jasmine": "^2.6.0",
     "@types/jsonwebtoken": "^7.2.3",
     "@types/mongodb": "^2.2.13",

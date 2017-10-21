@@ -58,13 +58,7 @@
     "@types/express-serve-static-core" "*"
     "@types/serve-static" "*"
 
-"@types/frisby@^0.8.1":
-  version "0.8.1"
-  resolved "https://registry.yarnpkg.com/@types/frisby/-/frisby-0.8.1.tgz#17ee29b2ea659210dfacc48eeafcc64b0bd340ac"
-  dependencies:
-    "@types/jasmine" "*"
-
-"@types/jasmine@*", "@types/jasmine@^2.6.0":
+"@types/jasmine@^2.6.0":
   version "2.6.0"
   resolved "https://registry.yarnpkg.com/@types/jasmine/-/jasmine-2.6.0.tgz#997b41a27752b4850af2683bc4a8d8222c25bd02"
 

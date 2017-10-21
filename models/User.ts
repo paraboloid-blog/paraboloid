@@ -9,7 +9,7 @@ import * as config from '../config';
 
 let log = debug('paraboloid:server:models:user');
 
-interface IUserModel extends IUser, Document { }
+export interface IUserModel extends IUser, Document { }
 
 let UserSchema: Schema = new Schema({
   username: {

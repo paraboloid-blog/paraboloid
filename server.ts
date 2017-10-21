@@ -26,7 +26,7 @@ app.use(session({
 
 log('>>> mongoose');
 (<any>mongoose).Promise = global.Promise;
-mongoose.connect(config.mongoURL, {useMongoClient: true});
+mongoose.connect(config.mongoURL, { useMongoClient: true });
 
 log('>>> extra logging');
 if (app.get('env') === 'development') {
@@ -42,8 +42,7 @@ app.use(function(
   req: express.Request,
   res: express.Response,
   next: express.NextFunction) {
-  res.status(404);
-  next(new Error('Not Found'));
+  res.status(404).send('Not Found');
 });
 
 log('>>> error handler');
@@ -53,9 +52,8 @@ app.use(function(
   res: express.Response,
   next: express.NextFunction
 ) {
-  log('Error %o: %o', res.statusCode, err.message);
-  res.status(res.statusCode || 500).json(
-    { 'errors': { message: err.message } });
+  log('Error %o (%o): %o', res.statusCode, err.name, err.message);
+  res.status(res.statusCode || 500).send(err.message);
 });
 
 log('>>> listener');

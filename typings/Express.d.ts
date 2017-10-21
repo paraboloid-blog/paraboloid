@@ -1,0 +1,3 @@
+interface RequestPayload {
+  payload: any;
+}

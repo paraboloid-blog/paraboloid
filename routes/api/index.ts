@@ -26,6 +26,9 @@ api.use(function(
       }, {})
     });
   }
+  else if (err.name = 'UnauthorizedError') {
+    res.status(401).send('No authorization token was found');
+  }
   else next(err);
 });
 

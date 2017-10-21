@@ -3,25 +3,22 @@ import * as jwt from 'express-jwt';
 import * as debug from 'debug';
 import * as config from '../../config';
 
-class Authorization {
+let log = debug('paraboloid:server:API:auth');
 
-  log = debug('paraboloid:server:authorization');
+class Authorization {
 
   private getTokenFromHeader(req: express.Request) {
 
-    this.log("authorization header: %o", req.headers.authorization);
-    let auth: string = req.headers.authorization[0];
-
-    if (auth.split(' ')[0] === 'Token' || auth.split(' ')[0] === 'Bearer') {
-      let token = auth.split(' ')[1];
-      this.log("token %o", token);
-      return token;
+    log("authorization header: %o", req.headers.authorization);
+    if (req.headers.authorization) {
+      let auth: string = req.headers.authorization.toString();
+      if (auth.split(' ')[0] === 'Token' || auth.split(' ')[0] === 'Bearer')
+        return auth.split(' ')[1];
     }
-    else return null;
+    return null;
   }
 
   get required(): jwt.RequestHandler {
-    this.log("authorization required");
     return jwt({
       secret: config.secret,
       userProperty: 'payload',
@@ -30,7 +27,6 @@ class Authorization {
   }
 
   get optional(): jwt.RequestHandler {
-    this.log("authorization optional");
     return jwt({
       secret: config.secret,
       userProperty: 'payload',
