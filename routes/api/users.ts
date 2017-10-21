@@ -1,15 +1,14 @@
-/// <reference path="../../typings/Express.d.ts"/>
-
 import * as mongoose from 'mongoose';
 import * as express from 'express';
 import * as jwt from 'express-jwt';
 import * as passport from 'passport';
 import * as debug from 'debug';
-import { auth } from './auth';
-import { IUserModel, UserModel } from '../../models';
+import { UserModel } from '../../models';
+import { IUser, Authorization, RequestPayload } from '../../typings'
 
 let log = debug('paraboloid:server:API:users');
 let router = express.Router();
+let auth = new Authorization();
 
 router.post('/', (
   req: express.Request,
@@ -64,12 +63,12 @@ router.get('/user', auth.required, (
 });
 
 router.delete('/user', auth.required, (
-  req: express.Request & RequestPayload,
+  req: RequestPayload,
   res: express.Response,
   next: express.NextFunction
 ) => {
 
-  UserModel.findOne({ username: req.payload.id }).then((user: IUserModel) => {
+  UserModel.findOne({ username: req.payload.id }).then((user: IUser) => {
     if (user) {
       log('User %o will be deleted', user.username);
       user.remove().then(() => {

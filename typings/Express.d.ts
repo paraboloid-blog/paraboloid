@@ -1,3 +1,0 @@
-interface RequestPayload {
-  payload: any;
-}

@@ -1,11 +1,11 @@
 import * as express from 'express';
 import * as jwt from 'express-jwt';
 import * as debug from 'debug';
-import * as config from '../../config';
+import * as config from '../config';
 
 let log = debug('paraboloid:server:API:auth');
 
-class Authorization {
+export class Authorization {
 
   private getTokenFromHeader(req: express.Request) {
 
@@ -35,7 +35,3 @@ class Authorization {
     });
   }
 };
-
-let auth = new Authorization();
-
-export { auth };
