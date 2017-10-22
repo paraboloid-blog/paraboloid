@@ -17,7 +17,7 @@ const paths = {
   pkg: 'package.json',
   srv: 'server.js',
   lock: 'yarn.lock',
-  test: 'spec',
+  test: 'spec/backend',
   tmp: '.tmp'
 };
 const package = require(path.join(__dirname, paths.pkg));
