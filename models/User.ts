@@ -33,7 +33,8 @@ let UserSchema: Schema = new Schema({
   },
   image: {
     type: String,
-    maxlength: 200
+    maxlength: 200,
+    match: [/\S+\.\S+/, 'is invalid'],
   },
   hash: {
     type: String,

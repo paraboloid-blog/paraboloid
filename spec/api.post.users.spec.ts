@@ -1,4 +1,4 @@
-import * as crypto from 'crypto';
+import * as d from './api.data';
 
 describe("Post /api/users", () => {
 
@@ -21,20 +21,21 @@ describe("Post /api/users", () => {
   });
 
   it("Create new user 'test'", function(doneFn) {
+
     frisby
       .post('http://127.0.0.1:8080/api/users',
       {
         user: {
-          username: 'test', email: 'test@mail.com', password: 'password',
-          bio: 'My life', image: 'img.png'
+          username: d.username, email: d.email, password: d.password,
+          bio: d.bio, image: d.image
         }
       })
       .expect('status', 201)
       .expect('header', 'Content-Type', 'application/json; charset=utf-8')
       .expect('json', {
         user: {
-          username: 'test', email: 'test@mail.com',
-          bio: 'My life', image: 'img.png'
+          username: d.username, email: d.email,
+          bio: d.bio, image: d.image
         }
       })
       .then((res: any) => {
@@ -53,12 +54,12 @@ describe("Post /api/users", () => {
   it("User 'test' already exists", function(doneFn) {
     frisby
       .post('http://127.0.0.1:8080/api/users',
-      { user: { username: 'test', email: 'test@mail.com', password: 'password' } })
+      { user: { username: d.username, email: d.email, password: d.password } })
       .expect('status', 201)
       .then((res: any) => {
         frisby
           .post('http://127.0.0.1:8080/api/users',
-          { user: { username: 'test', email: 'test@mail.com', password: 'password' } })
+          { user: { username: d.username, email: d.email, password: d.password } })
           .expect('status', 422)
           .expect('json', {
             errors: {
@@ -80,16 +81,22 @@ describe("Post /api/users", () => {
       });
   });
 
-  it("Invalid user has invalid mail", function(doneFn) {
+  it("Invalid user has invalid mail and picture", function(doneFn) {
     frisby
       .post('http://127.0.0.1:8080/api/users',
-      { user: { username: 'te-st', email: 'mail.com', password: 'password' } })
+      {
+        user: {
+          username: d.username_invalid, email: d.email_invalid,
+          image: d.image_invalid, password: d.password
+        }
+      })
       .expect('status', 422)
       .expect('json')
       .expect('json', {
         errors: {
           username: 'is invalid',
-          email: 'is invalid'
+          email: 'is invalid',
+          image: 'is invalid'
         }
       })
       .done(doneFn);
@@ -100,11 +107,11 @@ describe("Post /api/users", () => {
       .post('http://127.0.0.1:8080/api/users',
       {
         user: {
-          username: crypto.randomBytes(30).toString('hex'),
-          email: crypto.randomBytes(50).toString('hex') + '@mail.com',
-          bio: crypto.randomBytes(10000).toString('hex'),
-          image: crypto.randomBytes(200).toString('hex'),
-          password: 'password'
+          username: d.username_long,
+          email: d.email_long,
+          bio: d.bio_long,
+          image: d.image_long,
+          password: d.password
         }
       })
       .expect('status', 422)
