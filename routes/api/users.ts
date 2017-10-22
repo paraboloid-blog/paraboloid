@@ -3,8 +3,9 @@ import * as express from 'express';
 import * as jwt from 'express-jwt';
 import * as passport from 'passport';
 import * as debug from 'debug';
-import { UserModel } from '../../models';
-import { IUser, Authorization, RequestPayload } from '../../typings'
+import { UserModel, IUser } from '../../models';
+import { Authorization } from './Authorization'
+import { RequestPayload } from './Express'
 
 let log = debug('paraboloid:server:API:users');
 let router = express.Router();
@@ -15,16 +16,16 @@ router.post('/', (
   res: express.Response,
   next: express.NextFunction
 ) => {
-
   log('>>> post /api/users/ with %o', req.body);
 
   let user = new UserModel();
-  user.username = req.body.username;
-  user.email = req.body.email;
-  user.bio = req.body.bio;
-  user.image = req.body.image;
-  user.setPassword(req.body.password);
-
+  if (req.body.user) {
+    user.username = req.body.user.username;
+    user.email = req.body.user.email;
+    user.bio = req.body.user.bio;
+    user.image = req.body.user.image;
+    user.setPassword(req.body.user.password);
+  }
   user.save().then(function() {
     log("user %o successfully saved", user.username);
     return res.status(201).json({ user: user.toAuthJSON() });
@@ -40,14 +41,34 @@ router.post('/login', (
 });
 
 router.put('/user', auth.required, (
-  req: express.Request,
-  res: express.Response
+  req: RequestPayload,
+  res: express.Response,
+  next: express.NextFunction
 ) => {
-  res.status(200).json(
-    {
-      path: req.originalUrl,
-      user: req.params.user
-    });
+  log('>>> put /api/users/user with %o and payload %o', req.body, req.payload);
+
+  UserModel.findOne({ username: req.payload.id }).then((user: IUser) => {
+
+    let bodyUser = req.body.user;
+    if (user) {
+      log('User %o will be updated', user.username);
+      if (bodyUser) {
+        if (bodyUser.username) user.username = bodyUser.username;
+        if (bodyUser.email) user.email = bodyUser.email;
+        if (bodyUser.bio) user.bio = bodyUser.bio;
+        if (bodyUser.image) user.image = bodyUser.image;
+        if (bodyUser.password) user.setPassword(bodyUser.password);
+      }
+      user.save().then(() => {
+        log('User %o was updated', user.username);
+        return res.status(200).json({ user: user.toAuthJSON() });
+      }).catch(next);
+    }
+    else {
+      log('User not valid');
+      res.status(401).send({ errors: { message: 'User not valid' } });
+    }
+  }).catch(next);
 });
 
 router.get('/user', auth.required, (
@@ -68,17 +89,18 @@ router.delete('/user', auth.required, (
   next: express.NextFunction
 ) => {
 
+  log('>>> delete /api/users/user with payload %o', req.payload);
   UserModel.findOne({ username: req.payload.id }).then((user: IUser) => {
     if (user) {
       log('User %o will be deleted', user.username);
       user.remove().then(() => {
         log('User %o was deleted', user.username);
         return res.sendStatus(204);
-      });
+      }).catch(next);
     }
     else {
       log('User not valid');
-      res.status(401).send('User not valid');
+      res.status(401).send({ errors: { message: 'User not valid' } });
     }
   }).catch(next);
 

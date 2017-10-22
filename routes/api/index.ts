@@ -27,7 +27,7 @@ api.use(function(
     });
   }
   else if (err.name = 'UnauthorizedError') {
-    res.status(401).send('No authorization token was found');
+    res.status(401).send({ errors: { message: 'Invalid authorization token' } });
   }
   else next(err);
 });

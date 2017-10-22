@@ -4,7 +4,7 @@ import * as crypto from 'crypto';
 import * as jwt from 'jsonwebtoken';
 import * as debug from 'debug';
 import * as config from '../config';
-import * as models from '../typings';
+import * as models from './Models';
 
 let log = debug('paraboloid:server:models:user');
 

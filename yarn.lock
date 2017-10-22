@@ -289,7 +289,7 @@ assert-plus@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/assert-plus/-/assert-plus-0.2.0.tgz#d74e1b87e7affc0db8aadb7021f3fe48101ab234"
 
-assert@^1.1.1, assert@^1.3.0:
+assert@^1.1.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/assert/-/assert-1.4.1.tgz#99912d591836b5a6f5b345c0f07eefc08fc65d91"
   dependencies:
@@ -1605,17 +1605,14 @@ gulp-env@^0.4.0:
     ini "^1.3.4"
     through2 "^2.0.0"
 
-gulp-jasmine-node@^1.0.7:
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/gulp-jasmine-node/-/gulp-jasmine-node-1.0.7.tgz#1cec65097cc2409c4cda43e56ad1e0bdce13b611"
+gulp-jasmine@^2.4.2:
+  version "2.4.2"
+  resolved "https://registry.yarnpkg.com/gulp-jasmine/-/gulp-jasmine-2.4.2.tgz#5a7f47e27370c3619ac0a2a442be399671409db3"
   dependencies:
     arrify "^1.0.0"
-    assert "^1.3.0"
-    gulp-util "^3.0.7"
-    jasmine-node "^1.14.5"
+    gulp-util "^3.0.0"
+    jasmine "^2.3.0"
     jasmine-terminal-reporter "^1.0.0"
-    lodash "^4.1.0"
-    path "^0.12.7"
     through2 "^2.0.0"
 
 gulp-print@^2.0.1:
@@ -1641,7 +1638,7 @@ gulp-tsc@^1.3.2:
     vinyl-fs "^1.0.0"
     which "^1.0.5"
 
-gulp-util@^3.0.0, gulp-util@^3.0.1, gulp-util@^3.0.6, gulp-util@^3.0.7:
+gulp-util@^3.0.0, gulp-util@^3.0.1, gulp-util@^3.0.6:
   version "3.0.8"
   resolved "https://registry.yarnpkg.com/gulp-util/-/gulp-util-3.0.8.tgz#0054e1e744502e27c04c187c3ecc505dd54bbb4f"
   dependencies:
@@ -2111,7 +2108,7 @@ jasmine-terminal-reporter@^1.0.0:
     indent-string "^2.1.0"
     pluralize "^1.2.1"
 
-jasmine@^2.8.0:
+jasmine@^2.3.0, jasmine@^2.8.0:
   version "2.8.0"
   resolved "https://registry.yarnpkg.com/jasmine/-/jasmine-2.8.0.tgz#6b089c0a11576b1f16df11b80146d91d4e8b8a3e"
   dependencies:
@@ -2461,7 +2458,7 @@ lodash@^3.2.0:
   version "3.10.1"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-3.10.1.tgz#5bf45e8e49ba4189e17d482789dfd15bd140b7b6"
 
-lodash@^4.1.0, lodash@^4.11.1, lodash@^4.14.0:
+lodash@^4.11.1, lodash@^4.14.0:
   version "4.17.4"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
 
@@ -3088,13 +3085,6 @@ path-type@^2.0.0:
   dependencies:
     pify "^2.0.0"
 
-path@^0.12.7:
-  version "0.12.7"
-  resolved "https://registry.yarnpkg.com/path/-/path-0.12.7.tgz#d4dc2a506c4ce2197eb481ebfcd5b36c0140b10f"
-  dependencies:
-    process "^0.11.1"
-    util "^0.10.3"
-
 pause-stream@0.0.11:
   version "0.0.11"
   resolved "https://registry.yarnpkg.com/pause-stream/-/pause-stream-0.0.11.tgz#fe5a34b0cbce12b5aa6a2b403ee2e73b602f1445"
@@ -3157,7 +3147,7 @@ process-nextick-args@~1.0.6:
   version "1.0.7"
   resolved "https://registry.yarnpkg.com/process-nextick-args/-/process-nextick-args-1.0.7.tgz#150e20b756590ad3f91093f25a4f2ad8bff30ba3"
 
-process@^0.11.0, process@^0.11.1:
+process@^0.11.0:
   version "0.11.10"
   resolved "https://registry.yarnpkg.com/process/-/process-0.11.10.tgz#7332300e840161bda3e69a1d1d91a7d4bc16f182"
 

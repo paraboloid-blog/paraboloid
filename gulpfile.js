@@ -3,7 +3,7 @@ const yarn = require('gulp-yarn');
 const gprint = require('gulp-print');
 const env = require('gulp-env');
 const tsc = require('gulp-tsc');
-const jasmineNode = require('gulp-jasmine-node');
+const jasmine = require('gulp-jasmine');
 const webpack = require('webpack');
 const vinylPaths = require('vinyl-paths');
 const nodemon = require('nodemon');
@@ -17,13 +17,17 @@ const paths = {
   pkg: 'package.json',
   srv: 'server.js',
   lock: 'yarn.lock',
-  test: 'test/**/*spec.ts'
+  test: 'spec',
+  tmp: '.tmp'
 };
 const package = require(path.join(__dirname, paths.pkg));
 const wp_backend_conf = require(path.join(__dirname, paths.wp));
 
 gulp.task('clean', () => {
-  return gulp.src(path.join(__dirname, paths.dist, '*'))
+  return gulp.src([
+      path.join(__dirname, paths.dist),
+      path.join(__dirname, paths.tmp)
+    ])
     .pipe(gprint()).pipe(vinylPaths(del));
 });
 
@@ -61,10 +65,14 @@ gulp.task('backend:watch', () => {
 });
 
 gulp.task('backend:test', () => {
-  return gulp.src([paths.test])
+  return gulp.src([paths.test + '/*spec.ts'])
+    .pipe(gprint())
     .pipe(tsc())
-    .pipe(jasmineNode({
-      timeout: 10000
+    .pipe(gulp.dest(paths.tmp))
+    .pipe(gprint())
+    .pipe(jasmine({
+      timeout: 10000,
+      verbose: true
     }));
 });
 
