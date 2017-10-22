@@ -1,29 +1,14 @@
 describe("Delete /api/users/user", () => {
 
   const frisby = require('frisby');
-  const token_test = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InRlc3QifQ.VekQNE0AcAraBKzv1j-6PXhZz3F7eyW00x3fUbYhEBc';
-  const token_id = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlgifQ.sqx-AMQVHq2dgwMVqxqlUuAMGiZoC9k41Xg_MGhSBr0';
+  const token_id = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU5ZWM5Y2Q5ZDlkODZjNzY4N2NiYTcxYyJ9.Iqxjp9zj9bmgzCYhhGYhV-o5_HwxAOWwZK0uiNdEO0Q';
+  const token_user = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QifQ.FILrByQNl1Mx00RSZonmT3p5waGlFaymZJ3e3a5VBac';
   const token_invalid = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InRlc3QifQ==.vSRUKiX6KVqh+YMpxfzkgXOS/M7SWobEPv0jpBW3n8M=';
-
-  beforeAll(() => {
-    frisby.globalSetup({
-      request: {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + token_test
-        }
-      }
-    });
-  });
 
   it("Invalid jwt-token", function(doneFn) {
     frisby
       .setup({
-        request: {
-          headers: {
-            'Authorization': 'Bearer ' + token_invalid
-          }
-        }
+        request: { headers: { 'Authorization': 'Bearer ' + token_invalid } }
       })
       .del('http://127.0.0.1:8080/api/users/user')
       .expect('status', 401)
@@ -39,11 +24,7 @@ describe("Delete /api/users/user", () => {
   it("Missing ID in jwt-payload", function(doneFn) {
     frisby
       .setup({
-        request: {
-          headers: {
-            'Authorization': 'Bearer ' + token_id
-          }
-        }
+        request: { headers: { 'Authorization': 'Bearer ' + token_user } }
       })
       .del('http://127.0.0.1:8080/api/users/user')
       .expect('status', 401)
@@ -57,7 +38,11 @@ describe("Delete /api/users/user", () => {
   });
 
   it("Delete non existing user 'test'", function(doneFn) {
-    frisby.del('http://127.0.0.1:8080/api/users/user')
+    frisby
+      .setup({
+        request: { headers: { 'Authorization': 'Bearer ' + token_id } }
+      })
+      .del('http://127.0.0.1:8080/api/users/user')
       .expect('status', 401)
       .expect('header', 'Content-Type', 'application/json; charset=utf-8')
       .expect('json', {
@@ -69,7 +54,8 @@ describe("Delete /api/users/user", () => {
   });
 
   it("Delete user 'test'", function(doneFn) {
-    frisby.post('http://127.0.0.1:8080/api/users',
+    frisby
+      .post('http://127.0.0.1:8080/api/users',
       {
         user: {
           username: 'test', email: 'test@mail.com', password: 'password'
@@ -77,8 +63,14 @@ describe("Delete /api/users/user", () => {
       })
       .expect('status', 201)
       .expect('header', 'Content-Type', 'application/json; charset=utf-8')
-      .then(() => {
-        frisby.del('http://127.0.0.1:8080/api/users/user')
+      .then((res: any) => {
+        frisby
+          .setup({
+            request: {
+              headers: { 'Authorization': 'Bearer ' + res._body.user.token }
+            }
+          })
+          .del('http://127.0.0.1:8080/api/users/user')
           .expect('status', 204)
           .done(doneFn);
       });

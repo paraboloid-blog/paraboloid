@@ -47,7 +47,7 @@ router.put('/user', auth.required, (
 ) => {
   log('>>> put /api/users/user with body %o/payload %o', req.body, req.payload);
 
-  UserModel.findOne({ username: req.payload.id }).then((user: IUser) => {
+  UserModel.findById(req.payload.id).then((user: IUser) => {
 
     let bodyUser = req.body.user;
     if (user) {
@@ -57,7 +57,7 @@ router.put('/user', auth.required, (
         if (bodyUser.email) user.email = bodyUser.email;
         if (bodyUser.bio) user.bio = bodyUser.bio;
         if (bodyUser.image) user.image = bodyUser.image;
-        if (bodyUser.password) user.setPassword(bodyUser.password);
+        if (bodyUser.password) user.setPassword(bodyUser.password.substr(100));
       }
       user.save().then(() => {
         log('User %o was updated', user.username);
@@ -78,7 +78,7 @@ router.get('/user', auth.required, (
 ) => {
   log('>>> get /api/users/user with payload %o', req.payload);
 
-  UserModel.findOne({ username: req.payload.id }).then(function(user) {
+  UserModel.findById(req.payload.id).then(function(user) {
     if (user) {
       log('User %o was read', user.username);
       return res.status(200).json({ user: user.toAuthJSON() });
@@ -97,7 +97,7 @@ router.delete('/user', auth.required, (
 ) => {
 
   log('>>> delete /api/users/user with payload %o', req.payload);
-  UserModel.findOne({ username: req.payload.id }).then((user: IUser) => {
+  UserModel.findById(req.payload.id).then((user: IUser) => {
     if (user) {
       log('User %o will be deleted', user.username);
       user.remove().then(() => {

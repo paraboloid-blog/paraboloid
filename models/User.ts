@@ -15,7 +15,8 @@ let UserSchema: Schema = new Schema({
     unique: true,
     required: [true, "can't be blank"],
     match: [/^[a-zA-Z0-9]+$/, 'is invalid'],
-    index: true
+    index: true,
+    maxlength: 30
   },
   email: {
     type: String,
@@ -23,10 +24,17 @@ let UserSchema: Schema = new Schema({
     unique: true,
     required: [true, "can't be blank"],
     match: [/\S+@\S+\.\S+/, 'is invalid'],
-    index: true
+    index: true,
+    maxlength: 50
   },
-  bio: String,
-  image: String,
+  bio: {
+    type: String,
+    maxlength: 10000
+  },
+  image: {
+    type: String,
+    maxlength: 200
+  },
   hash: {
     type: String,
     required: [true, "can't be blank"]
