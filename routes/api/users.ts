@@ -16,7 +16,7 @@ router.post('/', (
   res: express.Response,
   next: express.NextFunction
 ) => {
-  log('>>> post /api/users/ with %o', req.body);
+  log('>>> post /api/users/ with body %o', req.body);
 
   let user = new UserModel();
   if (req.body.user) {
@@ -45,7 +45,7 @@ router.put('/user', auth.required, (
   res: express.Response,
   next: express.NextFunction
 ) => {
-  log('>>> put /api/users/user with %o and payload %o', req.body, req.payload);
+  log('>>> put /api/users/user with body %o/payload %o', req.body, req.payload);
 
   UserModel.findOne({ username: req.payload.id }).then((user: IUser) => {
 
@@ -72,15 +72,22 @@ router.put('/user', auth.required, (
 });
 
 router.get('/user', auth.required, (
-  req: express.Request,
+  req: RequestPayload,
   res: express.Response,
   next: express.NextFunction
 ) => {
-  res.status(200).json(
-    {
-      path: req.originalUrl,
-      user: req.params.user
-    });
+  log('>>> get /api/users/user with payload %o', req.payload);
+
+  UserModel.findOne({ username: req.payload.id }).then(function(user) {
+    if (user) {
+      log('User %o was read', user.username);
+      return res.status(200).json({ user: user.toAuthJSON() });
+    }
+    else {
+      log('User not valid');
+      res.status(401).send({ errors: { message: 'User not valid' } });
+    }
+  }).catch(next);
 });
 
 router.delete('/user', auth.required, (

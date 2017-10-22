@@ -46,7 +46,7 @@ describe("Post /api/users", () => {
           bio: 'My life', image: 'img.png'
         }
       })
-      .then(() => {
+      .then((res: any) => {
         frisby.del('http://127.0.0.1:8080/api/users/user')
           .expect('status', 204)
           .done(doneFn);
