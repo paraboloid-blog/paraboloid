@@ -21,7 +21,6 @@ describe("Post /api/users", () => {
   });
 
   it("Create new user 'test'", function(doneFn) {
-
     frisby
       .post('http://127.0.0.1:8080/api/users',
       {
