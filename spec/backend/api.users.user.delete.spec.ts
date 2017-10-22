@@ -14,7 +14,7 @@ describe("Delete /api/users/user", () => {
       .expect('header', 'Content-Type', 'application/json; charset=utf-8')
       .expect('json', {
         errors: {
-          message: 'Invalid authorization token'
+          authorization: 'failed'
         }
       })
       .done(doneFn);
@@ -30,7 +30,7 @@ describe("Delete /api/users/user", () => {
       .expect('header', 'Content-Type', 'application/json; charset=utf-8')
       .expect('json', {
         errors: {
-          message: 'User not valid'
+          user: 'not valid'
         }
       })
       .done(doneFn);
@@ -46,7 +46,7 @@ describe("Delete /api/users/user", () => {
       .expect('header', 'Content-Type', 'application/json; charset=utf-8')
       .expect('json', {
         errors: {
-          message: 'User not valid'
+          user: 'not valid'
         }
       })
       .done(doneFn);

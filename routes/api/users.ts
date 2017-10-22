@@ -5,7 +5,7 @@ import * as passport from 'passport';
 import * as debug from 'debug';
 import { UserModel, IUser } from '../../models';
 import { Authorization } from './Authorization'
-import { RequestPayload } from './Express'
+import { IRequestPayload } from './IRequestPayload'
 
 let log = debug('paraboloid:server:API:users');
 let router = express.Router();
@@ -35,13 +35,42 @@ router.post('/', (
 
 router.post('/login', (
   req: express.Request,
-  res: express.Response
+  res: express.Response,
+  next: express.NextFunction
 ) => {
-  res.status(200).json({ path: req.originalUrl });
+
+  let bodyUser = req.body.user;
+
+  if (!bodyUser) {
+    log('No user found');
+    return res.status(422).json({ errors: { user: "not found" } });
+  }
+  if (!bodyUser.email) {
+    log('No email for user %o found', bodyUser.username);
+    return res.status(422).json({ errors: { email: "can't be blank" } });
+  }
+  if (!bodyUser.password) {
+    log('No password for user %o found', bodyUser.username);
+    return res.status(422).json({ errors: { password: "can't be blank" } });
+  }
+
+  passport.authenticate(
+    'local',
+    { session: false },
+    (err: any, user: any, info: any) => {
+
+      if (err) { return next(err); }
+      if (user) {
+        user.token = user.generateJWT();
+        return res.json({ user: user.toAuthJSON() });
+      } else {
+        return res.status(422).json(info);
+      }
+    })(req, res, next);
 });
 
 router.put('/user', auth.required, (
-  req: RequestPayload,
+  req: IRequestPayload,
   res: express.Response,
   next: express.NextFunction
 ) => {
@@ -66,13 +95,13 @@ router.put('/user', auth.required, (
     }
     else {
       log('User not valid');
-      res.status(401).send({ errors: { message: 'User not valid' } });
+      res.status(401).send({ errors: { user: 'not valid' } });
     }
   }).catch(next);
 });
 
 router.get('/user', auth.required, (
-  req: RequestPayload,
+  req: IRequestPayload,
   res: express.Response,
   next: express.NextFunction
 ) => {
@@ -85,13 +114,13 @@ router.get('/user', auth.required, (
     }
     else {
       log('User not valid');
-      res.status(401).send({ errors: { message: 'User not valid' } });
+      res.status(401).send({ errors: { user: 'not valid' } });
     }
   }).catch(next);
 });
 
 router.delete('/user', auth.required, (
-  req: RequestPayload,
+  req: IRequestPayload,
   res: express.Response,
   next: express.NextFunction
 ) => {
@@ -107,7 +136,7 @@ router.delete('/user', auth.required, (
     }
     else {
       log('User not valid');
-      res.status(401).send({ errors: { message: 'User not valid' } });
+      res.status(401).send({ errors: { user: 'not valid' } });
     }
   }).catch(next);
 

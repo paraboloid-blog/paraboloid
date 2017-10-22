@@ -1,4 +1,4 @@
-import { IUser } from './Models';
-import { UserModel } from './User';
+import { IUser } from './IUser';
+import { UserModel } from './userModel';
 
 export { IUser, UserModel };

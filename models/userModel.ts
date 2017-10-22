@@ -1,10 +1,10 @@
-import { Schema, Model, model } from 'mongoose';
 import * as uniqueValidator from 'mongoose-unique-validator';
 import * as crypto from 'crypto';
 import * as jwt from 'jsonwebtoken';
 import * as debug from 'debug';
 import * as config from '../config';
-import * as models from './Models';
+import { IUser } from './IUser';
+import { Schema, Model, model } from 'mongoose';
 
 let log = debug('paraboloid:server:models:user');
 
@@ -91,4 +91,4 @@ UserSchema.methods.toAuthJSON = function(): object {
   return token;
 };
 
-export const UserModel: Model<models.IUser> = model<models.IUser>('User', UserSchema);
+export const UserModel: Model<IUser> = model<IUser>('User', UserSchema);
