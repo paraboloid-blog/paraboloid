@@ -1,6 +1,6 @@
 import * as debug from 'debug';
 import { Strategy } from 'passport-local';
-import { UserModel } from '../../models';
+import { IUser, UserModel } from '../../models';
 
 let log = debug('paraboloid:server:API:strategy');
 
@@ -9,16 +9,16 @@ export let strategy = new Strategy({
   passwordField: 'user[password]'
 }, (email, password, done) => {
 
-  log('Login with email %o and papssword %o', email, password);
+  log('Login with email %o and password %o', email, password);
 
-  UserModel.findOne({ email: email }).then(function(user) {
+  UserModel.findOne({ email: email }).then((user: IUser) => {
 
     if (!user || !user.validPassword(password)) {
       log('Credentials are not valid');
       return done(null, false, { message: 'email or password is invalid' });
     }
 
-    log('Valid credentials found');
+    log('Valid credentials for user %o found', user.username);
     return done(null, user);
 
   }).catch(done);

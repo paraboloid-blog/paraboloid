@@ -49,10 +49,10 @@ let UserSchema: Schema = new Schema({
 UserSchema.plugin(uniqueValidator, { message: 'is already taken.' });
 
 UserSchema.methods.validPassword = function(password: string): boolean {
-  log('password %o', password);
+  log('Password %o is checked', password);
   if (password) {
     let hash = crypto.pbkdf2Sync(password, this.salt, 10000, 512, 'sha512').toString('hex');
-    log('hash %o is compared to user hash %o', hash, this.hash);
+    log('Comparision of user and password hashes succeeded: %o', hash === this.hash);
     return this.hash === hash;
   }
   else return false;

@@ -55,16 +55,18 @@ router.post('/login', (
   }
 
   passport.authenticate(
-    'local',
-    { session: false },
-    (err: any, user: any, info: any) => {
+    'local', { session: false }, (err: any, user: any, info: any) => {
 
-      if (err) { return next(err); }
+      if (err) {
+        log('Error occured: %o', err);
+        return next(err);
+      }
       if (user) {
-        user.token = user.generateJWT();
+        log('User found: %o', user);
         return res.json({ user: user.toAuthJSON() });
       } else {
-        return res.status(422).json(info);
+        log('Information: %o', info);
+        return res.status(422).json({ errors: info });
       }
     })(req, res, next);
 });
@@ -107,7 +109,7 @@ router.get('/user', auth.required, (
 ) => {
   log('>>> get /api/users/user with payload %o', req.payload);
 
-  UserModel.findById(req.payload.id).then(function(user) {
+  UserModel.findById(req.payload.id).then((user: IUser) => {
     if (user) {
       log('User %o was read', user.username);
       return res.status(200).json({ user: user.toAuthJSON() });
