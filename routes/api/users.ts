@@ -1,6 +1,5 @@
 import * as mongoose from 'mongoose';
 import * as express from 'express';
-import * as jwt from 'express-jwt';
 import * as passport from 'passport';
 import * as debug from 'debug';
 import { UserModel, IUser } from '../../models';

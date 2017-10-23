@@ -76,6 +76,8 @@ gulp.task('backend:test', () => {
     }));
 });
 
+gulp.task('test', ['backend:test']);
+
 gulp.task('build', ['modules', 'backend:build']);
 
 gulp.task('watch', ['backend:watch'], () => {

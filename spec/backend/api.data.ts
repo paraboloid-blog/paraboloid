@@ -10,6 +10,7 @@ export const email_long = getHexString(50) + '@' + getHexString(5) + '.' + getHe
 export const email_new = getHexString(5) + '@' + getHexString(5) + '.' + getHexString(1);
 export const email_invalid = getHexString(5) + '.' + getHexString(1);
 export const password = getHexString(5);
+export const password_new = getHexString(5);
 export const bio = getHexString(100);
 export const bio_long = getHexString(10000);
 export const bio_new = getHexString(100);
