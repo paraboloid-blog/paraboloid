@@ -1,5 +1,4 @@
 import * as express from 'express';
-import * as session from 'express-session';
 import * as bodyParser from 'body-parser';
 import * as morgan from 'morgan';
 import * as mongoose from 'mongoose';
@@ -15,14 +14,6 @@ let app = express();
 log('>>> bodyParser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-
-log('>>> session');
-app.use(session({
-  secret: config.secret,
-  cookie: { maxAge: 60000 },
-  resave: false,
-  saveUninitialized: false
-}));
 
 log('>>> mongoose');
 (<any>mongoose).Promise = global.Promise;
