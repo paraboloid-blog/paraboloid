@@ -1,5 +1,5 @@
 import * as debug from 'debug';
-let log = debug('paraboloid:server:address');
+let log = debug('paraboloid:server:config:address');
 
 export const ip =
   process.env.IP ||

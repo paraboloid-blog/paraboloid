@@ -79,7 +79,7 @@ UserSchema.methods.generateJWT = function(): string {
   }, config.secret);
 };
 
-UserSchema.methods.toAuthJSON = function(): object {
+UserSchema.methods.getAuthJSON = function(): object {
   let token = {
     username: this.username,
     email: this.email,
@@ -89,6 +89,17 @@ UserSchema.methods.toAuthJSON = function(): object {
   };
   log('JWT token: %o', token);
   return token;
+};
+
+UserSchema.methods.getProfileJSON = function(): object {
+  let profile = {
+    username: this.username,
+    email: this.email,
+    bio: this.bio,
+    image: this.image || config.image
+  };
+  log('User profile: %o', profile);
+  return profile;
 };
 
 export const UserModel: Model<IUser> = model<IUser>('User', UserSchema);

@@ -27,7 +27,7 @@ router.post('/', (
   }
   user.save().then(function() {
     log("user %o successfully saved", user.username);
-    return res.status(201).json({ user: user.toAuthJSON() });
+    return res.status(201).json({ user: user.getAuthJSON() });
   }).catch(next);
 
 });
@@ -62,7 +62,7 @@ router.post('/login', (
       }
       if (user) {
         log('User found: %o', user);
-        return res.json({ user: user.toAuthJSON() });
+        return res.json({ user: user.getAuthJSON() });
       } else {
         log('Information: %o', info);
         return res.status(422).json({ errors: info });
@@ -91,7 +91,7 @@ router.put('/user', auth.required, (
       }
       user.save().then(() => {
         log('User %o was updated', user.username);
-        return res.status(200).json({ user: user.toAuthJSON() });
+        return res.status(200).json({ user: user.getAuthJSON() });
       }).catch(next);
     }
     else {
@@ -111,7 +111,7 @@ router.get('/user', auth.required, (
   UserModel.findById(req.payload.id).then((user: IUser) => {
     if (user) {
       log('User %o was read', user.username);
-      return res.status(200).json({ user: user.toAuthJSON() });
+      return res.status(200).json({ user: user.getAuthJSON() });
     }
     else {
       log('User not valid');

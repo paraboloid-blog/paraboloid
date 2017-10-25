@@ -1,5 +1,5 @@
 import * as debug from 'debug';
-let log = debug('paraboloid:server:mongo');
+let log = debug('paraboloid:server:config:mongo');
 
 let mongoURL =
   process.env.OPENSHIFT_MONGODB_DB_URL ||

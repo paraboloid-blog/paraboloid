@@ -71,7 +71,7 @@ gulp.task('backend:test', () => {
     .pipe(gulp.dest(paths.tmp))
     .pipe(gprint())
     .pipe(jasmine({
-      timeout: 10000,
+      timeout: 3000,
       verbose: true
     }));
 });

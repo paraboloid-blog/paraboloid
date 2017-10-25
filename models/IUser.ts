@@ -9,5 +9,6 @@ export interface IUser extends Document {
   salt: string;
   validPassword: (password: string) => boolean;
   setPassword: (password: string) => void;
-  toAuthJSON: () => object;
+  getAuthJSON: () => object;
+  getProfileJSON: () => object;
 }
