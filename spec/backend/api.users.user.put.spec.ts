@@ -4,6 +4,19 @@ describe("Put /api/users/user", () => {
 
   const frisby = require('frisby');
 
+  it("Missing jwt-token", function(doneFn) {
+    frisby
+      .put('http://127.0.0.1:8080/api/users/user')
+      .expect('status', 401)
+      .expect('header', 'Content-Type', 'application/json; charset=utf-8')
+      .expect('json', {
+        errors: {
+          authorization: 'failed'
+        }
+      })
+      .done(doneFn);
+  });
+
   it("Invalid jwt-token", function(doneFn) {
     frisby
       .setup({
