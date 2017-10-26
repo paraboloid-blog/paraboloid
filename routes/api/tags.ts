@@ -1,5 +1,8 @@
 import * as express from 'express';
+import * as debug from 'debug';
 import { IArticle, ArticleModel } from '../../models';
+
+let log = debug('paraboloid:server:API:tags');
 
 let router = express.Router();
 
@@ -8,7 +11,10 @@ router.get('/', function(
   res: express.Response,
   next: express.NextFunction) {
 
+  log('>>> get /api/tags');
+
   ArticleModel.find().distinct('tagList').then((tags: [IArticle]) => {
+    log('Tags %o found', tags);
     return res.json({ tags: tags });
   }).catch(next);
 });
