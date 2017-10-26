@@ -11,7 +11,7 @@ export let strategy = new Strategy({
 
   log('Login with email %o and password %o', email, password);
 
-  UserModel.findOne({ email: email }).then((user: IUser) => {
+  UserModel.findOne({ email: email.toLowerCase() }).then((user: IUser) => {
 
     if (!user || !user.validPassword(password)) {
       log('Credentials are not valid');

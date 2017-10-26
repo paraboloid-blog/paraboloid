@@ -87,7 +87,7 @@ describe("Get /api/users/user", () => {
           .expect('status', 200)
           .expect('json', {
             user: {
-              username: d.username, email: d.email,
+              username: d.username.toLowerCase(), email: d.email.toLowerCase(),
               bio: d.bio, image: d.image
             }
           })

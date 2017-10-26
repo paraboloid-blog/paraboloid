@@ -38,6 +38,8 @@ router.post('/login', (
   next: express.NextFunction
 ) => {
 
+  log('>>> post /api/users/login with body %o', req.body);
+
   let bodyUser = req.body.user;
 
   if (!bodyUser) {

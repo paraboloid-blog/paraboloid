@@ -17,7 +17,8 @@ describe("Post /api/users/login", () => {
       .expect('header', 'Content-Type', 'application/json; charset=utf-8')
       .expect('json', {
         user: {
-          username: d.username, email: d.email, bio: d.bio, image: d.image
+          username: d.username.toLowerCase(), email: d.email.toLowerCase(),
+          bio: d.bio, image: d.image
         }
       })
       .then((res_register: any) => {
@@ -32,7 +33,8 @@ describe("Post /api/users/login", () => {
           .expect('header', 'Content-Type', 'application/json; charset=utf-8')
           .expect('json', {
             user: {
-              username: d.username, email: d.email, bio: d.bio, image: d.image
+              username: d.username.toLowerCase(), email: d.email.toLowerCase(),
+              bio: d.bio, image: d.image
             }
           })
           .then((res_login: any) => {
@@ -67,7 +69,8 @@ describe("Post /api/users/login", () => {
       .expect('header', 'Content-Type', 'application/json; charset=utf-8')
       .expect('json', {
         user: {
-          username: d.username, email: d.email, bio: d.bio, image: d.image
+          username: d.username.toLowerCase(), email: d.email.toLowerCase(),
+          bio: d.bio, image: d.image
         }
       })
       .then((res_register: any) => {
@@ -108,7 +111,8 @@ describe("Post /api/users/login", () => {
       .expect('header', 'Content-Type', 'application/json; charset=utf-8')
       .expect('json', {
         user: {
-          username: d.username, email: d.email, bio: d.bio, image: d.image
+          username: d.username.toLowerCase(), email: d.email.toLowerCase(),
+          bio: d.bio, image: d.image
         }
       })
       .then((res_register: any) => {
@@ -149,7 +153,8 @@ describe("Post /api/users/login", () => {
       .expect('header', 'Content-Type', 'application/json; charset=utf-8')
       .expect('json', {
         user: {
-          username: d.username, email: d.email, bio: d.bio, image: d.image
+          username: d.username.toLowerCase(), email: d.email.toLowerCase(),
+          bio: d.bio, image: d.image
         }
       })
       .then((res_register: any) => {

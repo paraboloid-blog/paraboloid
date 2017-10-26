@@ -33,7 +33,7 @@ describe("Post /api/users", () => {
       .expect('header', 'Content-Type', 'application/json; charset=utf-8')
       .expect('json', {
         user: {
-          username: d.username, email: d.email,
+          username: d.username.toLowerCase(), email: d.email.toLowerCase(),
           bio: d.bio, image: d.image
         }
       })

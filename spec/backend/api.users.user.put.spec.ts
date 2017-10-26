@@ -85,7 +85,7 @@ describe("Put /api/users/user", () => {
       .expect('json',
       {
         user: {
-          username: d.username, email: d.email,
+          username: d.username.toLowerCase(), email: d.email.toLowerCase(),
           bio: d.bio, image: d.image
         }
       })
@@ -107,7 +107,7 @@ describe("Put /api/users/user", () => {
           .expect('header', 'Content-Type', 'application/json; charset=utf-8')
           .expect('json', {
             user: {
-              username: d.username, email: d.email_new,
+              username: d.username.toLowerCase(), email: d.email_new.toLowerCase(),
               bio: d.bio_new, image: d.image_new
             }
           })
