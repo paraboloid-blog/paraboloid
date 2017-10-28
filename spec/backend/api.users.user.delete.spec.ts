@@ -49,7 +49,7 @@ describe("Delete /api/users/user", () => {
       .done(doneFn);
   });
 
-  it("Delete non existing user 'test'", function(doneFn) {
+  it("Delete non existing user", function(doneFn) {
     frisby
       .setup({
         request: { headers: { 'Authorization': 'Bearer ' + d.token_id } }
@@ -65,7 +65,7 @@ describe("Delete /api/users/user", () => {
       .done(doneFn);
   });
 
-  it("Delete user 'test'", function(doneFn) {
+  it("Delete user", function(doneFn) {
     frisby
       .post('http://127.0.0.1:8080/api/users',
       {

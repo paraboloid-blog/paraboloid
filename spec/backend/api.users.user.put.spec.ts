@@ -49,7 +49,7 @@ describe("Put /api/users/user", () => {
       .done(doneFn);
   });
 
-  it("Update non existing user 'test'", function(doneFn) {
+  it("Update non existing user", function(doneFn) {
     frisby
       .setup({
         request: { headers: { 'Authorization': 'Bearer ' + d.token_id } }
@@ -71,7 +71,7 @@ describe("Put /api/users/user", () => {
       .done(doneFn);
   });
 
-  it("Change mail, bio and image of user 'test'", function(doneFn) {
+  it("Change mail, bio and image of user", function(doneFn) {
     frisby
       .post('http://127.0.0.1:8080/api/users',
       {

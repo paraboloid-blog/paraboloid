@@ -17,7 +17,7 @@ describe("Get /api/users/user", () => {
       .done(doneFn);
   });
 
-  it("Invalid jwt-token", function(doneFn) {
+  fit("Invalid jwt-token", function(doneFn) {
     frisby
       .setup({
         request: { headers: { 'Authorization': 'Bearer ' + d.token_invalid } }
@@ -49,7 +49,7 @@ describe("Get /api/users/user", () => {
       .done(doneFn);
   });
 
-  it("Delete non existing user 'test'", function(doneFn) {
+  it("Get non existing user", function(doneFn) {
     frisby
       .setup({
         request: { headers: { 'Authorization': 'Bearer ' + d.token_id } }
@@ -65,7 +65,7 @@ describe("Get /api/users/user", () => {
       .done(doneFn);
   });
 
-  it("Retrieve user 'test'", function(doneFn) {
+  it("Retrieve user", function(doneFn) {
     frisby
       .post('http://127.0.0.1:8080/api/users',
       {
