@@ -13,6 +13,7 @@ User specific services:
 - PUT /api/users/user: Changing the current user
 - GET /api/users/user: Read current user
 - DELETE /api/users/user: Delete current user
+
 Article specific services:
 - POST /api/articles: Creation of a new article
 - DELETE /api/articles/:slug: Deletion of article *:slug*
