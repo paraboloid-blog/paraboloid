@@ -20,7 +20,7 @@ describe("Post /api/users", () => {
       .done(doneFn);
   });
 
-  it("Create new user 'test'", function(doneFn) {
+  it("Create new user", function(doneFn) {
     frisby
       .post('http://127.0.0.1:8080/api/users',
       {
@@ -50,7 +50,7 @@ describe("Post /api/users", () => {
       });
   });
 
-  it("User 'test' already exists", function(doneFn) {
+  it("User already exists", function(doneFn) {
     frisby
       .post('http://127.0.0.1:8080/api/users',
       { user: { username: d.username, email: d.email, password: d.password } })

@@ -1,4 +1,6 @@
-import { Document, Schema } from 'mongoose';
+import { Document } from 'mongoose';
+import { IUser } from './IUser';
+import { IComment } from './IComment';
 
 export interface IArticle extends Document {
   slug: string,
@@ -6,8 +8,7 @@ export interface IArticle extends Document {
   description: string,
   body: string,
   tagList: [string],
-  author: Schema.Types.ObjectId,
-  comments: [Schema.Types.ObjectId],
-  slugify: () => void;
+  author: IUser,
+  comments: [IComment],
   getArticleJSON: () => void;
 }

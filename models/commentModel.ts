@@ -1,7 +1,7 @@
-import * as mongoose from 'mongoose';
+import { Schema, Model, model } from 'mongoose';
 
-let CommentSchema = new mongoose.Schema();
+let CommentSchema = new Schema();
 
-mongoose.model('Comment', CommentSchema);
+model('Comment', CommentSchema);
 
 export { CommentSchema };

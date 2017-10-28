@@ -83,7 +83,8 @@ gulp.task('build', ['modules', 'backend:build']);
 gulp.task('watch', ['backend:watch'], () => {
   env({
     vars: {
-      DEBUG: '*paraboloid*'
+      DEBUG: '*paraboloid*',
+      REGISTER: true
     }
   });
   nodemon({

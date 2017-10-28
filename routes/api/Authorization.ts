@@ -18,19 +18,10 @@ export class Authorization {
     return null;
   }
 
-  get required(): jwt.RequestHandler {
+  get verify(): jwt.RequestHandler {
     return jwt({
       secret: config.secret,
       userProperty: 'payload',
-      getToken: this.getTokenFromHeader
-    });
-  }
-
-  get optional(): jwt.RequestHandler {
-    return jwt({
-      secret: config.secret,
-      userProperty: 'payload',
-      credentialsRequired: false,
       getToken: this.getTokenFromHeader
     });
   }

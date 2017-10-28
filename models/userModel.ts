@@ -23,7 +23,7 @@ let UserSchema: Schema = new Schema({
     lowercase: true,
     unique: true,
     required: [true, "can't be blank"],
-    match: [/\S+@\S+\.\S+/, 'is invalid'],
+    match: [/^\S+@\S+\.\S+$/, 'is invalid'],
     index: true,
     maxlength: 50
   },
@@ -34,7 +34,7 @@ let UserSchema: Schema = new Schema({
   image: {
     type: String,
     maxlength: 200,
-    match: [/\S+\.\S+/, 'is invalid'],
+    match: [/^\S+\.\S+$/, 'is invalid'],
   },
   hash: {
     type: String,
@@ -47,6 +47,13 @@ let UserSchema: Schema = new Schema({
 }, { timestamps: true });
 
 UserSchema.plugin(uniqueValidator, { message: 'is already taken.' });
+
+UserSchema.pre('save', function(next) {
+  let now = new Date();
+  log('UpdatedAt from %o to %o', this.updatedAt, now);
+  this.updatedAt = now;
+  next();
+});
 
 UserSchema.methods.validPassword = function(password: string): boolean {
   log('Password %o is checked', password);
@@ -96,7 +103,7 @@ UserSchema.methods.getProfileJSON = function(): object {
     username: this.username,
     email: this.email,
     bio: this.bio,
-    image: this.image || config.image
+    image: this.image
   };
   log('User profile: %o', profile);
   return profile;

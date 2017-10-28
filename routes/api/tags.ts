@@ -15,7 +15,7 @@ router.get('/', function(
 
   ArticleModel.find().distinct('tagList').then((tags: [IArticle]) => {
     log('Tags %o found', tags);
-    return res.json({ tags: tags });
+    return res.status(200).json({ tags: tags });
   }).catch(next);
 });
 

@@ -12,26 +12,35 @@ let ArticleSchema = new Schema({
     type: String,
     lowercase: true,
     unique: true,
+    required: [true, "can't be blank"],
+    match: [/^\S+$/, 'is invalid'],
+    index: true,
     maxlength: 100
   },
   title: {
     type: String,
+    required: [true, "can't be blank"],
     maxlength: 100
   },
   description: {
     type: String,
+    required: [true, "can't be blank"],
     maxlength: 1000
   },
   body: {
     type: String,
+    required: [true, "can't be blank"],
     maxlength: 100000
   },
   tagList: [{
     type: String,
-    maxlength: 100
+    required: [true, "can't be blank"],
+    match: [/^\S+$/, 'is invalid'],
+    maxlength: 30
   }],
   author: {
     type: Schema.Types.ObjectId,
+    required: [true, "can't be blank"],
     ref: 'User'
   },
   comments: [{
@@ -43,16 +52,22 @@ let ArticleSchema = new Schema({
 ArticleSchema.plugin(uniqueValidator, { message: 'is already taken.' });
 
 ArticleSchema.pre('validate', function(next) {
-  if (!this.slug) this.slugify();
+  if (!this.slug) {
+    this.slug = slug(this.title)
+    log('Slug: %o', this.slug);
+  }
   next();
 });
 
-ArticleSchema.methods.slugify = function(): void {
-  this.slug = slug(this.title) + '-' + (Math.random() * Math.pow(36, 6) | 0).toString(36);
-};
+ArticleSchema.pre('save', function(next) {
+  let now = new Date();
+  log('UpdatedAt from %o to %o', this.updatedAt, now);
+  this.updatedAt = now;
+  next();
+});
 
 ArticleSchema.methods.getArticleJSON = function() {
-  return {
+  let article = {
     slug: this.slug,
     title: this.title,
     description: this.description,
@@ -62,6 +77,8 @@ ArticleSchema.methods.getArticleJSON = function() {
     createdAt: this.createdAt,
     updatedAt: this.updatedAt
   };
+  log('Article: %o', article);
+  return article;
 };
 
 export const ArticleModel: Model<IArticle> = model<IArticle>('Article', ArticleSchema);

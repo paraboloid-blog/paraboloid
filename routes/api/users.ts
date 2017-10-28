@@ -2,9 +2,10 @@ import * as mongoose from 'mongoose';
 import * as express from 'express';
 import * as passport from 'passport';
 import * as debug from 'debug';
+import * as config from '../../config';
 import { UserModel, IUser } from '../../models';
 import { Authorization } from './Authorization'
-import { IRequestPayload } from './IRequestPayload'
+import { IRequestExt } from './IRequestExt'
 
 let log = debug('paraboloid:server:API:users');
 let router = express.Router();
@@ -17,19 +18,19 @@ router.post('/', (
 ) => {
   log('>>> post /api/users/ with body %o', req.body);
 
-  let user = new UserModel();
-  if (req.body.user) {
-    user.username = req.body.user.username;
-    user.email = req.body.user.email;
-    user.bio = req.body.user.bio;
-    user.image = req.body.user.image;
-    user.setPassword(req.body.user.password);
+  if (!config.register) {
+    log('Registration is not allowed');
+    return res.status(405).send({ errors: { registration: 'not allowed' } });
   }
-  user.save().then(function() {
-    log("user %o successfully saved", user.username);
-    return res.status(201).json({ user: user.getAuthJSON() });
-  }).catch(next);
 
+  let user = new UserModel(req.body.user);
+  if (req.body.user.password) user.setPassword(req.body.user.password);
+
+  user.save().then(() => {
+    let json = user.getAuthJSON();
+    log('User successfully saved: %o', json);
+    return res.status(201).json({ user: json });
+  }).catch(next);
 });
 
 router.post('/login', (
@@ -44,7 +45,7 @@ router.post('/login', (
 
   if (!bodyUser) {
     log('No user found');
-    return res.status(422).json({ errors: { user: "not found" } });
+    return res.status(422).json({ errors: { user: 'not found' } });
   }
   if (!bodyUser.email) {
     log('No email for user %o found', bodyUser.username);
@@ -63,8 +64,9 @@ router.post('/login', (
         return next(err);
       }
       if (user) {
-        log('User found: %o', user);
-        return res.json({ user: user.getAuthJSON() });
+        let json = user.getAuthJSON()
+        log('User found: %o', json);
+        return res.json({ user: json });
       } else {
         log('Information: %o', info);
         return res.status(422).json({ errors: info });
@@ -72,8 +74,8 @@ router.post('/login', (
     })(req, res, next);
 });
 
-router.put('/user', auth.required, (
-  req: IRequestPayload,
+router.put('/user', auth.verify, (
+  req: IRequestExt,
   res: express.Response,
   next: express.NextFunction
 ) => {
@@ -92,19 +94,20 @@ router.put('/user', auth.required, (
         if (bodyUser.password) user.setPassword(bodyUser.password.substr(100));
       }
       user.save().then(() => {
-        log('User %o was updated', user.username);
-        return res.status(200).json({ user: user.getAuthJSON() });
+        let json = user.getAuthJSON();
+        log('User was updated: %o', json);
+        return res.status(200).json({ user: json });
       }).catch(next);
     }
     else {
       log('User not valid');
-      res.status(401).send({ errors: { user: 'not valid' } });
+      return res.status(401).send({ errors: { user: 'not valid' } });
     }
   }).catch(next);
 });
 
-router.get('/user', auth.required, (
-  req: IRequestPayload,
+router.get('/user', auth.verify, (
+  req: IRequestExt,
   res: express.Response,
   next: express.NextFunction
 ) => {
@@ -112,18 +115,19 @@ router.get('/user', auth.required, (
 
   UserModel.findById(req.payload.id).then((user: IUser) => {
     if (user) {
-      log('User %o was read', user.username);
-      return res.status(200).json({ user: user.getAuthJSON() });
+      let json = user.getAuthJSON();
+      log('User was read: %o', json);
+      return res.status(200).json({ user: json });
     }
     else {
       log('User not valid');
-      res.status(401).send({ errors: { user: 'not valid' } });
+      return res.status(401).send({ errors: { user: 'not valid' } });
     }
   }).catch(next);
 });
 
-router.delete('/user', auth.required, (
-  req: IRequestPayload,
+router.delete('/user', auth.verify, (
+  req: IRequestExt,
   res: express.Response,
   next: express.NextFunction
 ) => {
@@ -139,10 +143,9 @@ router.delete('/user', auth.required, (
     }
     else {
       log('User not valid');
-      res.status(401).send({ errors: { user: 'not valid' } });
+      return res.status(401).send({ errors: { user: 'not valid' } });
     }
   }).catch(next);
-
 });
 
 export { router as users };
