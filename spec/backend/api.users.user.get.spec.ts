@@ -17,7 +17,7 @@ describe("Get /api/users/user", () => {
       .done(doneFn);
   });
 
-  fit("Invalid jwt-token", function(doneFn) {
+  it("Invalid jwt-token", function(doneFn) {
     frisby
       .setup({
         request: { headers: { 'Authorization': 'Bearer ' + d.token_invalid } }

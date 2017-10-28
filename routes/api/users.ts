@@ -74,7 +74,7 @@ router.post('/login', (
     })(req, res, next);
 });
 
-router.put('/user', auth.verify, (
+router.put('/user', auth.required, (
   req: IRequestExt,
   res: express.Response,
   next: express.NextFunction
@@ -106,7 +106,7 @@ router.put('/user', auth.verify, (
   }).catch(next);
 });
 
-router.get('/user', auth.verify, (
+router.get('/user', auth.required, (
   req: IRequestExt,
   res: express.Response,
   next: express.NextFunction
@@ -126,13 +126,14 @@ router.get('/user', auth.verify, (
   }).catch(next);
 });
 
-router.delete('/user', auth.verify, (
+router.delete('/user', auth.required, (
   req: IRequestExt,
   res: express.Response,
   next: express.NextFunction
 ) => {
 
   log('>>> delete /api/users/user with payload %o', req.payload);
+
   UserModel.findById(req.payload.id).then((user: IUser) => {
     if (user) {
       log('User %o will be deleted', user.username);
