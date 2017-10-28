@@ -96,7 +96,6 @@ router.put('/:slug', auth.required, (
     log('>>> put /api/articles/:slug with payload %o', req.payload);
 
     UserModel.findById(req.payload.id).then(function(user: IUser) {
-
         if (!user) {
             log('User not valid');
             return res.status(401).send({ errors: { user: 'not valid' } });
@@ -134,17 +133,16 @@ router.delete('/:slug', auth.required, (
             log('User not valid');
             return res.status(401).send({ errors: { user: 'not valid' } });
         }
-        if (req.article.author._id.toString() === req.payload.id.toString()) {
-            req.article.remove().then(() => {
-                log('Article %o was deleted', req.article.slug);
-                res.sendStatus(204);
-            });
-        } else {
+        if (req.article.author._id.toString() !== req.payload.id.toString()) {
             log('Article %o may not be deleted by %o', req.article.slug, user.username);
             return res.status(403).send({
                 errors: { article: 'may not be deleted' }
             });
         }
+        req.article.remove().then(() => {
+            log('Article %o was deleted', req.article.slug);
+            res.sendStatus(204);
+        });
     }).catch(next);
 });
 
