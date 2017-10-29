@@ -1,6 +1,6 @@
 import * as d from './api.data';
 
-fdescribe("GET /api/articles", () => {
+describe("GET /api/articles", () => {
 
   const frisby = require('frisby');
   let token: string
