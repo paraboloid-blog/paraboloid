@@ -9,9 +9,10 @@ export let errors = (
   res: express.Response,
   next: express.NextFunction
 ) => {
+  log('%o: %o', err.name, err.message);
 
   if (err.name === 'ValidationError') {
-    log('%o: %o', err.name, err.message);
+    log('%o is handled', err.name);
     return res.status(422).json({
       errors: Object.keys(err.errors).reduce(function(errors: any, key: any) {
         errors[key] = err.errors[key].message;
@@ -19,8 +20,9 @@ export let errors = (
       }, {})
     });
   }
-  else if (err.name = 'UnauthorizedError') {
-    res.status(401).send({ errors: { authorization: 'failed' } });
+  if (err.name === 'UnauthorizedError') {
+    log('%o is handled', err.name);
+    return res.status(401).send({ errors: { authorization: 'failed' } });
   }
-  else next(err);
+  next(err);
 };

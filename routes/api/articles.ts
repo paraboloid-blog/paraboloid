@@ -48,32 +48,39 @@ router.get('/', (
     if (req.query.limit) limit = Number(req.query.limit);
     if (req.query.offset) offset = Number(req.query.offset);
     if (req.query.tag) query.tagList = { "$in": [req.query.tag] };
-    if (req.query.author) {
-      UserModel
-        .findOne({ username: req.query.author })
-        .then((author: IUser) => query.author = author._id);
-    }
   }
-  log('Query articles regarding %o (limit %o, offset %o)', query, limit, offset);
+  UserModel
+    .findOne(req.query.author ? { username: req.query.author.toLowerCase() } : {})
+    .then((author: IUser) => {
 
-  let articleQuery: [PromiseLike<IArticle[]>, PromiseLike<number>] = [
-    ArticleModel
-      .find(query).limit(limit).skip(offset).sort({ updatedAt: 'desc' })
-      .populate('author').exec() as PromiseLike<IArticle[]>,
-    ArticleModel
-      .count(query).exec() as PromiseLike<number>
-  ];
-  Promise.all(articleQuery).then((results: [IArticle[], number]) => {
-    let articles = results[0];
-    let articlesCount = results[1];
+      log('Author found: %o', author.username);
+      query.author = author._id
+      log('Query articles regarding %o (limit %o, offset %o)', query, limit, offset);
 
-    let json = {
-      articles: articles.map((article: IArticle) => article.toJSON()),
-      articlesCount: articlesCount
-    };
-    log('Articles found: %o', json);
-    return res.status(200).json({ article: json });
-  }).catch(next);
+      let articleQuery: [PromiseLike<IArticle[]>, PromiseLike<number>] = [
+        ArticleModel
+          .find(query).limit(limit).skip(offset).sort({ updatedAt: 'desc' })
+          .populate('author').exec() as PromiseLike<IArticle[]>,
+        ArticleModel
+          .count(query).exec() as PromiseLike<number>
+      ];
+      Promise.all(articleQuery).then((results: [IArticle[], number]) => {
+        let articles = results[0];
+        let articlesCount = results[1];
+
+        let json = {
+          articles: articles.map((article: IArticle) => article.toJSON()),
+          articlesCount: articlesCount
+        };
+        log('Articles found: %o', json);
+        return res.status(200).json({ article: json });
+      }).catch(next);
+    })
+    .catch(() => {
+      let json = { articles: [], articlesCount: 0 };
+      log('No articles found');
+      return res.status(404).json({ article: json });
+    });
 });
 
 router.post('/', auth.required, (
