@@ -42,11 +42,7 @@ let ArticleSchema = new Schema({
     type: Schema.Types.ObjectId,
     required: [true, "can't be blank"],
     ref: 'User'
-  },
-  comments: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Comment'
-  }]
+  }
 }, { timestamps: true });
 
 ArticleSchema.plugin(uniqueValidator, { message: 'is already taken.' });

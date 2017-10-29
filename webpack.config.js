@@ -1,6 +1,7 @@
 const webpack = require('webpack');
 const path = require('path');
 const fs = require('fs');
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 var nodeModules = {};
 
@@ -22,7 +23,7 @@ module.exports = {
     path: path.join(__dirname, 'dist'),
     filename: 'server.js'
   },
-  plugins: [ new webpack.optimize.UglifyJsPlugin() ],
+  plugins: [ new UglifyJSPlugin() ],
   externals: nodeModules,
   module: {
     rules: [{

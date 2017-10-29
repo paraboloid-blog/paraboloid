@@ -90,7 +90,6 @@ describe("Post /api/users", () => {
         }
       })
       .expect('status', 422)
-      .expect('json')
       .expect('json', {
         errors: {
           username: 'is invalid',
@@ -114,7 +113,6 @@ describe("Post /api/users", () => {
         }
       })
       .expect('status', 422)
-      .expect('json')
       .then((json: any) => {
         let errors = json._body.errors;
         expect(errors.username).toContain('longer than the maximum allowed length');
