@@ -73,7 +73,7 @@ router.get('/', (
     };
     log('Articles found: %o', json);
     return res.status(200).json({ article: json });
-  });
+  }).catch(next);
 });
 
 router.post('/', auth.required, (
