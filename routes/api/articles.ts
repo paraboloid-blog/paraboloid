@@ -44,17 +44,15 @@ router.get('/', (
   let limit: number = 20;
   let offset: number = 0;
 
-  if (req.query) {
-    if (req.query.limit) limit = Number(req.query.limit);
-    if (req.query.offset) offset = Number(req.query.offset);
-    if (req.query.tag) query.tagList = { "$in": [req.query.tag] };
-  }
+  if (req.query.limit) limit = Number(req.query.limit);
+  if (req.query.offset) offset = Number(req.query.offset);
+  if (req.query.tag) query.tagList = { "$in": [req.query.tag] };
+
   UserModel
     .findOne(req.query.author ? { username: req.query.author.toLowerCase() } : {})
     .then((author: IUser) => {
 
-      log('Author found: %o', author.username);
-      query.author = author._id
+      if (req.query.author) query.author = author._id;
       log('Query articles regarding %o (limit %o, offset %o)', query, limit, offset);
 
       let articleQuery: [PromiseLike<IArticle[]>, PromiseLike<number>] = [

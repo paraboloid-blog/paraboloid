@@ -155,7 +155,7 @@ describe("GET /api/articles", () => {
       .done(doneFn);
   });
 
-  it("Query all articles", function(doneFn) {
+  it("Query articles (special author)", function(doneFn) {
     frisby
       .setup({
         request: {
@@ -168,6 +168,32 @@ describe("GET /api/articles", () => {
       '&limit=2' +
       '&offset=0'
       )
+      .expect('status', 200)
+      .expect('header', 'Content-Type', 'application/json; charset=utf-8')
+      .expect('json', {
+        article: {
+          articles: [{
+            slug: slug, title: d.title, description: d.description,
+            body: d.body, tagList: d.tags
+          },
+          {
+            slug: slug_new, title: d.title_new, description: d.description_new,
+            body: d.body_new, tagList: d.tags_new
+          }],
+          articlesCount: 2
+        }
+      })
+      .done(doneFn);
+  });
+
+  it("Query all articles", function(doneFn) {
+    frisby
+      .setup({
+        request: {
+          headers: { 'Authorization': 'Bearer ' + token }
+        }
+      })
+      .get('http://127.0.0.1:8080/api/articles')
       .expect('status', 200)
       .expect('header', 'Content-Type', 'application/json; charset=utf-8')
       .expect('json', {
