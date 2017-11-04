@@ -26,14 +26,14 @@ export const image_new = new re(/\w{1,196}\.\w{1,3}/).gen();
 export const image_long = new re(/\w{200,}\.\w{1,3}/).gen();
 export const image_invalid = new re(/\w{1,200}/).gen();
 
-export const title = new re(/.{1,100}/).gen();
-export const title_new = new re(/.{1,100}/).gen();
+export const title = new re(/.{1,10}/).gen();
+export const title_new = new re(/.{1,10}/).gen();
 
-export const description = new re(/.{1,1000}/).gen();
-export const description_new = new re(/.{1,1000}/).gen();
+export const description = new re(/.{1,10}/).gen();
+export const description_new = new re(/.{1,10}/).gen();
 
-export const body = new re(/.{1,100000}/).gen();
-export const body_new = new re(/.{1,100000}/).gen();
+export const body = new re(/.{1,10}/).gen();
+export const body_new = new re(/.{1,10}/).gen();
 
 export const tags = (new re(/(\w{1,30},){1,}\w{1,30}/).gen()).split(',');
 export const tags_new = (new re(/(\w{1,30},){1,}\w{1,30}/).gen()).split(',');

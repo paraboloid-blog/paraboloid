@@ -51,6 +51,9 @@ describe("GET /api/articles", () => {
               .expect('status', 201)
               .then((res_article_new: any) => {
                 slug_new = res_article_new._body.article.slug;
+                expect(token).toBeTruthy();
+                expect(slug).toBeTruthy();
+                expect(slug_new).toBeTruthy();
                 doneFn();
               });
           });
@@ -59,11 +62,6 @@ describe("GET /api/articles", () => {
 
   it("Query articles (invalid offset)", function(doneFn) {
     frisby
-      .setup({
-        request: {
-          headers: { 'Authorization': 'Bearer ' + token }
-        }
-      })
       .get(
       'http://127.0.0.1:8080/api/articles' +
       '?author=' + d.username +
@@ -82,11 +80,6 @@ describe("GET /api/articles", () => {
 
   it("Query articles (invalid user)", function(doneFn) {
     frisby
-      .setup({
-        request: {
-          headers: { 'Authorization': 'Bearer ' + token }
-        }
-      })
       .get(
       'http://127.0.0.1:8080/api/articles' +
       '?author=' + d.username_new
@@ -104,11 +97,6 @@ describe("GET /api/articles", () => {
 
   it("Query articles (latest article found)", function(doneFn) {
     frisby
-      .setup({
-        request: {
-          headers: { 'Authorization': 'Bearer ' + token }
-        }
-      })
       .get(
       'http://127.0.0.1:8080/api/articles' +
       '?author=' + d.username +
@@ -130,11 +118,6 @@ describe("GET /api/articles", () => {
 
   it("Query articles (oldest article found)", function(doneFn) {
     frisby
-      .setup({
-        request: {
-          headers: { 'Authorization': 'Bearer ' + token }
-        }
-      })
       .get(
       'http://127.0.0.1:8080/api/articles' +
       '?limit=1' +
@@ -157,16 +140,9 @@ describe("GET /api/articles", () => {
 
   it("Query articles (special author)", function(doneFn) {
     frisby
-      .setup({
-        request: {
-          headers: { 'Authorization': 'Bearer ' + token }
-        }
-      })
       .get(
       'http://127.0.0.1:8080/api/articles' +
-      '?author=' + d.username +
-      '&limit=2' +
-      '&offset=0'
+      '?author=' + d.username
       )
       .expect('status', 200)
       .expect('header', 'Content-Type', 'application/json; charset=utf-8')
@@ -186,13 +162,28 @@ describe("GET /api/articles", () => {
       .done(doneFn);
   });
 
-  it("Query all articles", function(doneFn) {
+  it("Query articles (special tag)", function(doneFn) {
     frisby
-      .setup({
-        request: {
-          headers: { 'Authorization': 'Bearer ' + token }
+      .get(
+      'http://127.0.0.1:8080/api/articles' +
+      '?tag=' + d.tags[0]
+      )
+      .expect('status', 200)
+      .expect('header', 'Content-Type', 'application/json; charset=utf-8')
+      .expect('json', {
+        article: {
+          articles: [{
+            slug: slug, title: d.title, description: d.description,
+            body: d.body, tagList: d.tags
+          }],
+          articlesCount: 1
         }
       })
+      .done(doneFn);
+  });
+
+  it("Query all articles", function(doneFn) {
+    frisby
       .get('http://127.0.0.1:8080/api/articles')
       .expect('status', 200)
       .expect('header', 'Content-Type', 'application/json; charset=utf-8')
@@ -240,7 +231,7 @@ describe("GET /api/articles", () => {
               .del('http://127.0.0.1:8080/api/users/user')
               .expect('status', 204)
               .done(doneFn);
-          })
-      })
-  })
+          });
+      });
+  });
 });

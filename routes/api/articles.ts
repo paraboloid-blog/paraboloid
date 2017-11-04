@@ -76,7 +76,12 @@ router.get('/', (
       };
       log('Articles found: %o', json);
       return res.status(200).json({ article: json });
-    }).catch(next);
+    })
+      .catch(() => {
+        let json = { articles: [], articlesCount: 0 };
+        log('No articles found');
+        return res.status(404).json({ article: json });
+      });
   })
     .catch(() => {
       let json = { articles: [], articlesCount: 0 };
