@@ -26,11 +26,13 @@ router.post('/', (
   let user = new UserModel(req.body.user);
   if (req.body.user.password) user.setPassword(req.body.user.password);
 
-  user.save().then(() => {
-    let json = user.getAuthJSON();
-    log('User successfully saved: %o', json);
-    return res.status(201).json({ user: json });
-  }).catch(next);
+  user.save()
+    .then(() => {
+      let json = user.getAuthJSON();
+      log('User successfully saved: %o', json);
+      return res.status(201).json({ user: json });
+    })
+    .catch(next);
 });
 
 router.post('/login', (
@@ -81,29 +83,36 @@ router.put('/user', auth.required, (
 ) => {
   log('>>> put /api/users/user with body %o/payload %o', req.body, req.payload);
 
-  UserModel.findById(req.payload.id).then((user: IUser) => {
+  UserModel.findById(req.payload.id)
+    .then((user: IUser) => {
 
-    let bodyUser = req.body.user;
-    if (user) {
-      log('User %o will be updated', user.username);
-      if (bodyUser) {
-        if (bodyUser.username) user.username = bodyUser.username;
-        if (bodyUser.email) user.email = bodyUser.email;
-        if (bodyUser.bio) user.bio = bodyUser.bio;
-        if (bodyUser.image) user.image = bodyUser.image;
-        if (bodyUser.password) user.setPassword(bodyUser.password.substr(100));
+      let bodyUser = req.body.user;
+      if (user) {
+        log('User %o will be updated', user.username);
+        if (bodyUser) {
+          if (bodyUser.username) user.username = bodyUser.username;
+          if (bodyUser.email) user.email = bodyUser.email;
+          if (bodyUser.bio) user.bio = bodyUser.bio;
+          if (bodyUser.image) user.image = bodyUser.image;
+          if (bodyUser.password) user.setPassword(bodyUser.password.substr(100));
+        }
+        user.save()
+          .then(() => {
+            let json = user.getAuthJSON();
+            log('User was updated: %o', json);
+            return res.status(200).json({ user: json });
+          })
+          .catch(next);
       }
-      user.save().then(() => {
-        let json = user.getAuthJSON();
-        log('User was updated: %o', json);
-        return res.status(200).json({ user: json });
-      }).catch(next);
-    }
-    else {
+      else {
+        log('User not valid');
+        return res.status(401).send({ errors: { user: 'not valid' } });
+      }
+    })
+    .catch((err: any) => {
       log('User not valid');
       return res.status(401).send({ errors: { user: 'not valid' } });
-    }
-  }).catch(next);
+    });
 });
 
 router.get('/user', auth.required, (
@@ -113,17 +122,22 @@ router.get('/user', auth.required, (
 ) => {
   log('>>> get /api/users/user with payload %o', req.payload);
 
-  UserModel.findById(req.payload.id).then((user: IUser) => {
-    if (user) {
-      let json = user.getAuthJSON();
-      log('User was read: %o', json);
-      return res.status(200).json({ user: json });
-    }
-    else {
+  UserModel.findById(req.payload.id)
+    .then((user: IUser) => {
+      if (user) {
+        let json = user.getAuthJSON();
+        log('User was read: %o', json);
+        return res.status(200).json({ user: json });
+      }
+      else {
+        log('User not valid');
+        return res.status(401).send({ errors: { user: 'not valid' } });
+      }
+    })
+    .catch((err: any) => {
       log('User not valid');
       return res.status(401).send({ errors: { user: 'not valid' } });
-    }
-  }).catch(next);
+    });
 });
 
 router.delete('/user', auth.required, (
@@ -134,19 +148,24 @@ router.delete('/user', auth.required, (
 
   log('>>> delete /api/users/user with payload %o', req.payload);
 
-  UserModel.findById(req.payload.id).then((user: IUser) => {
-    if (user) {
-      log('User %o will be deleted', user.username);
-      user.remove().then(() => {
-        log('User %o was deleted', user.username);
-        return res.sendStatus(204);
-      }).catch(next);
-    }
-    else {
+  UserModel.findById(req.payload.id)
+    .then((user: IUser) => {
+      if (user) {
+        log('User %o will be deleted', user.username);
+        user.remove().then(() => {
+          log('User %o was deleted', user.username);
+          return res.sendStatus(204);
+        }).catch(next);
+      }
+      else {
+        log('User not valid');
+        return res.status(401).send({ errors: { user: 'not valid' } });
+      }
+    })
+    .catch((err: any) => {
       log('User not valid');
       return res.status(401).send({ errors: { user: 'not valid' } });
-    }
-  }).catch(next);
+    });
 });
 
 export { router as users };

@@ -44,7 +44,7 @@ app.use(function(
   next: express.NextFunction
 ) {
   log('Error %o (%o): %o', res.statusCode, err.name, err.message);
-  res.status(res.statusCode || 500).send(err.message);
+  res.status(res.statusCode || 500).send({ errors: { message: err.message } });
 });
 
 log('>>> listener');

@@ -65,7 +65,13 @@ describe("GET /api/articles", () => {
       .get('http://127.0.0.1:8080/api/tags')
       .expect('status', 200)
       .expect('header', 'Content-Type', 'application/json; charset=utf-8')
-      .expect('json', { tags: d.tags.concat(d.tags_new) })
+      .expect('json', {
+        tags:
+        d.tags.concat(d.tags_new).filter(
+          (elem: any, index: any, self: any) => {
+            return index == self.indexOf(elem);
+          })
+      })
       .done(doneFn);
   });
 
