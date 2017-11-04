@@ -1,13 +1,19 @@
 import * as d from './api.data';
 
-describe("GET /api/articles", () => {
+describe("Get /api/tags", () => {
 
   const frisby = require('frisby');
-  let token: string
-  let slug: string;
-  let slug_new: string;
 
-  beforeAll((doneFn) => {
+  it("Get empty tag list", function(doneFn) {
+    frisby
+      .get('http://127.0.0.1:8080/api/tags')
+      .expect('status', 200)
+      .expect('header', 'Content-Type', 'application/json; charset=utf-8')
+      .expect('json', { tags: [] })
+      .done(doneFn);
+  });
+
+  it("Query all tags", function(doneFn) {
     frisby
       .post('http://127.0.0.1:8080/api/users',
       {
@@ -18,7 +24,7 @@ describe("GET /api/articles", () => {
       })
       .expect('status', 201)
       .then((res_user: any) => {
-        token = res_user._body.user.token;
+        let token = res_user._body.user.token;
         frisby
           .setup({
             request: {
@@ -34,7 +40,7 @@ describe("GET /api/articles", () => {
           })
           .expect('status', 201)
           .then((res_article: any) => {
-            slug = res_article._body.article.slug;
+            let slug = res_article._body.article.slug;
             frisby
               .setup({
                 request: {
@@ -50,59 +56,53 @@ describe("GET /api/articles", () => {
               })
               .expect('status', 201)
               .then((res_article_new: any) => {
-                slug_new = res_article_new._body.article.slug;
+                let slug_new = res_article_new._body.article.slug;
                 expect(token).toBeTruthy();
                 expect(slug).toBeTruthy();
                 expect(slug_new).toBeTruthy();
-                doneFn();
+                frisby
+                  .get('http://127.0.0.1:8080/api/tags')
+                  .expect('status', 200)
+                  .expect('header', 'Content-Type', 'application/json; charset=utf-8')
+                  .expect('json', {
+                    tags:
+                    d.tags.concat(d.tags_new).filter(
+                      (elem: any, index: any, self: any) => {
+                        return index == self.indexOf(elem);
+                      })
+                  })
+                  .then((res_article_new: any) => {
+                    frisby
+                      .setup({
+                        request: {
+                          headers: { 'Authorization': 'Bearer ' + token }
+                        }
+                      })
+                      .del('http://127.0.0.1:8080/api/articles/' + slug_new)
+                      .expect('status', 204)
+                      .then(() => {
+                        frisby
+                          .setup({
+                            request: {
+                              headers: { 'Authorization': 'Bearer ' + token }
+                            }
+                          })
+                          .del('http://127.0.0.1:8080/api/articles/' + slug)
+                          .expect('status', 204)
+                          .then(() => {
+                            frisby
+                              .setup({
+                                request: {
+                                  headers: { 'Authorization': 'Bearer ' + token }
+                                }
+                              })
+                              .del('http://127.0.0.1:8080/api/users/user')
+                              .expect('status', 204)
+                              .done(doneFn);
+                          });
+                      });
+                  });
               });
-          });
-      });
-  });
-
-  it("Query all tags", function(doneFn) {
-    frisby
-      .get('http://127.0.0.1:8080/api/tags')
-      .expect('status', 200)
-      .expect('header', 'Content-Type', 'application/json; charset=utf-8')
-      .expect('json', {
-        tags:
-        d.tags.concat(d.tags_new).filter(
-          (elem: any, index: any, self: any) => {
-            return index == self.indexOf(elem);
-          })
-      })
-      .done(doneFn);
-  });
-
-  afterAll((doneFn) => {
-    frisby
-      .setup({
-        request: {
-          headers: { 'Authorization': 'Bearer ' + token }
-        }
-      })
-      .del('http://127.0.0.1:8080/api/articles/' + slug_new)
-      .expect('status', 204)
-      .then(() => {
-        frisby
-          .setup({
-            request: {
-              headers: { 'Authorization': 'Bearer ' + token }
-            }
-          })
-          .del('http://127.0.0.1:8080/api/articles/' + slug)
-          .expect('status', 204)
-          .then(() => {
-            frisby
-              .setup({
-                request: {
-                  headers: { 'Authorization': 'Bearer ' + token }
-                }
-              })
-              .del('http://127.0.0.1:8080/api/users/user')
-              .expect('status', 204)
-              .done(doneFn);
           });
       });
   });

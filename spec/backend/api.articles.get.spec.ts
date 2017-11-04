@@ -1,6 +1,6 @@
 import * as d from './api.data';
 
-describe("GET /api/articles", () => {
+describe("Get /api/articles", () => {
 
   const frisby = require('frisby');
   let token: string
@@ -65,9 +65,27 @@ describe("GET /api/articles", () => {
       .get(
       'http://127.0.0.1:8080/api/articles' +
       '?author=' + d.username +
+      '&offset=' + d.offset_invalid
+      )
+      .expect('status', 400)
+      .expect('header', 'Content-Type', 'application/json; charset=utf-8')
+      .expect('json', {
+        article: {
+          articles: [],
+          articlesCount: 0
+        }
+      })
+      .done(doneFn);
+  });
+
+  it("Query articles (large offset)", function(doneFn) {
+    frisby
+      .get(
+      'http://127.0.0.1:8080/api/articles' +
+      '?author=' + d.username +
       '&offset=10'
       )
-      .expect('status', 200)
+      .expect('status', 404)
       .expect('header', 'Content-Type', 'application/json; charset=utf-8')
       .expect('json', {
         article: {
@@ -78,11 +96,46 @@ describe("GET /api/articles", () => {
       .done(doneFn);
   });
 
+  it("Query articles (invalid limit)", function(doneFn) {
+    frisby
+      .get(
+      'http://127.0.0.1:8080/api/articles' +
+      '?author=' + d.username +
+      '&offset=' + d.limit_invalid
+      )
+      .expect('status', 400)
+      .expect('header', 'Content-Type', 'application/json; charset=utf-8')
+      .expect('json', {
+        article: {
+          articles: [],
+          articlesCount: 0
+        }
+      })
+      .done(doneFn);
+  });
+
   it("Query articles (invalid user)", function(doneFn) {
     frisby
       .get(
       'http://127.0.0.1:8080/api/articles' +
       '?author=' + d.username_new
+      )
+      .expect('status', 404)
+      .expect('header', 'Content-Type', 'application/json; charset=utf-8')
+      .expect('json', {
+        article: {
+          articles: [],
+          articlesCount: 0
+        }
+      })
+      .done(doneFn);
+  });
+
+  it("Query articles (invalid tag)", function(doneFn) {
+    frisby
+      .get(
+      'http://127.0.0.1:8080/api/articles' +
+      '?tag=' + d.tags_invalid[0]
       )
       .expect('status', 404)
       .expect('header', 'Content-Type', 'application/json; charset=utf-8')

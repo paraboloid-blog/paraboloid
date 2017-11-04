@@ -13,10 +13,15 @@ router.get('/', function(
 
   log('>>> get /api/tags');
 
-  ArticleModel.find().distinct('tagList').then((tags: [IArticle]) => {
-    log('Tags %o found', tags);
-    return res.status(200).json({ tags: tags });
-  }).catch(next);
+  ArticleModel.find().distinct('tagList')
+    .then((tags: [IArticle]) => {
+      log('Tags %o found', tags);
+      return res.status(200).json({ tags: tags });
+    })
+    .catch((err: any) => {
+      log('No tags available');
+      return res.status(404).send({ errors: { tags: 'not found' } });
+    });
 });
 
 export { router as tags };

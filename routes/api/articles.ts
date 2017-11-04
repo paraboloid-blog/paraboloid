@@ -42,6 +42,16 @@ router.get('/', (
   next: express.NextFunction) => {
 
   log('>>> get /api/articles with query %o', req.query);
+  let empty = { articles: [], articlesCount: 0 };
+
+  if (req.query.limit && !req.query.limit.match(/^\d+$/)) {
+    log('Limit %o is invalid', req.query.limit);
+    return res.status(400).json({ article: empty });
+  }
+  if (req.query.offset && !req.query.offset.match(/^\d+$/)) {
+    log('Offset %o is invalid', req.query.offset);
+    return res.status(400).json({ article: empty });
+  }
 
   let findAuthor = () =>
     new Promise<IUser | null>((resolve, reject) => {
@@ -72,6 +82,7 @@ router.get('/', (
       ];
       Promise.all(articleQuery)
         .then((results: [IArticle[], number]) => {
+
           let articles = results[0];
           let articlesCount = results[1];
 
@@ -79,19 +90,23 @@ router.get('/', (
             articles: articles.map((article: IArticle) => article.toJSON()),
             articlesCount: articlesCount
           };
-          log('Articles found: %o', json);
-          return res.status(200).json({ article: json });
+          if (json.articles.length) {
+            log('Articles found: %o', json);
+            return res.status(200).json({ article: json });
+          }
+          else {
+            log('No articles found');
+            return res.status(404).json({ article: json });
+          }
         })
         .catch((err: any) => {
-          let json = { articles: [], articlesCount: 0 };
           log('No articles found');
-          return res.status(404).json({ article: json });
+          return res.status(404).json({ article: empty });
         });
     })
     .catch((err: any) => {
-      let json = { articles: [], articlesCount: 0 };
       log('No articles found');
-      return res.status(404).json({ article: json });
+      return res.status(404).json({ article: empty });
     });
 });
 

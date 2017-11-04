@@ -22,8 +22,54 @@ describe("Post /api/articles", () => {
       });
   });
 
-  it("Create new article", function(doneFn) {
+  it("Missing jwt-token", function(doneFn) {
+    frisby
+      .post('http://127.0.0.1:8080/api/articles',
+      {
+        article: {
+          title: d.title, description: d.description,
+          body: d.body, tagList: d.tags
+        }
+      })
+      .expect('status', 401)
+      .expect('header', 'Content-Type', 'application/json; charset=utf-8')
+      .expect('json', { errors: { authorization: 'failed' } })
+      .done(doneFn);
+  });
 
+  it("Invalid jwt-token", function(doneFn) {
+    frisby
+      .setup({
+        request: {
+          headers: { 'Authorization': 'Bearer ' + d.token_invalid }
+        }
+      })
+      .post('http://127.0.0.1:8080/api/articles',
+      {
+        article: {
+          title: d.title, description: d.description,
+          body: d.body, tagList: d.tags
+        }
+      })
+      .expect('status', 401)
+      .expect('header', 'Content-Type', 'application/json; charset=utf-8')
+      .expect('json', { errors: { authorization: 'failed' } })
+      .done(doneFn);
+  });
+
+  it("Missing ID in jwt-payload", function(doneFn) {
+    frisby
+      .setup({
+        request: { headers: { 'Authorization': 'Bearer ' + d.token_user } }
+      })
+      .del('http://127.0.0.1:8080/api/users/user')
+      .expect('status', 401)
+      .expect('header', 'Content-Type', 'application/json; charset=utf-8')
+      .expect('json', { errors: { user: 'not valid' } })
+      .done(doneFn);
+  });
+
+  it("Create new article", function(doneFn) {
     frisby
       .setup({
         request: {
