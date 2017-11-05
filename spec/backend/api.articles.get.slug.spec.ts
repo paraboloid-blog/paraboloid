@@ -5,7 +5,6 @@ describe("Get /api/articles/:slug", () => {
   const frisby = require('frisby');
   let token: string
   let slug: string;
-  let slug_new: string;
 
   beforeAll((doneFn) => {
     frisby

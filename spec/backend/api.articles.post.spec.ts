@@ -62,7 +62,31 @@ describe("Post /api/articles", () => {
       .setup({
         request: { headers: { 'Authorization': 'Bearer ' + d.token_user } }
       })
-      .del('http://127.0.0.1:8080/api/users/user')
+      .post('http://127.0.0.1:8080/api/articles',
+      {
+        article: {
+          title: d.title, description: d.description,
+          body: d.body, tagList: d.tags
+        }
+      })
+      .expect('status', 401)
+      .expect('header', 'Content-Type', 'application/json; charset=utf-8')
+      .expect('json', { errors: { user: 'not valid' } })
+      .done(doneFn);
+  });
+
+  it("Create article with invalid user", function(doneFn) {
+    frisby
+      .setup({
+        request: { headers: { 'Authorization': 'Bearer ' + d.token_id } }
+      })
+      .post('http://127.0.0.1:8080/api/articles',
+      {
+        article: {
+          title: d.title, description: d.description,
+          body: d.body, tagList: d.tags
+        }
+      })
       .expect('status', 401)
       .expect('header', 'Content-Type', 'application/json; charset=utf-8')
       .expect('json', { errors: { user: 'not valid' } })
